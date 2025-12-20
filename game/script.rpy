@@ -1,8 +1,25 @@
-﻿# 1. DEFINE VARIABLES AND CLASSES FIRST
+﻿# ==============================================================================
+# DEFINITIONS & TRANSFORMS
+# ==============================================================================
+
+# 1. DEFINE VARIABLES AND CLASSES FIRST
 # 'default' sets up variables that Ren'Py tracks for saving/loading.
 default display_value = 0
 default roll_finished = False
 default pc = None 
+
+define narrator = Character(None)
+define sys = Character("System", color="#ff5555") # The antagonistic force
+
+# Variables to track the current run
+default current_outcome = "none"
+default chosen_approach = "none"
+
+
+# ==============================================================================
+# PYTHON LOGIC
+# ==============================================================================
+
 
 init python:
     import random
@@ -86,22 +103,67 @@ init python:
             return friction
     
 
-    def perform_roll(target_percent):
-        # 1. Calculate the Target Score (same math as before)
-        # 75% chance = need to roll 6 or higher on d20
-        target_score = 21 - (target_percent / 5)
+    def perform_roll(pc, approach_type):
+        odds = calculate_outcome_odds(pc, approach_type)
+
+        # Determine the result immediately
+        final_roll = random.randint(1, 100)
+
+        final_outcome = None
         
-        # 2. Determine the result immediately
-        final_roll = random.randint(1, 20)
-        
+        if final_roll <= odds["good"]:
+            final_outcome = "good"
+        elif final_roll <= odds["good"] + odds["mixed"]:
+            final_outcome = "mixed"
+        else:
+            final_outcome = "bad"
+
         # 3. Call the screen and WAIT for the player to click "Continue"
         # The screen will return True or False based on the result
-        result = renpy.call_screen("dice_roll", target=target_score, final_value=final_roll)
+        renpy.call_screen("dice_roll", final_value=final_roll)
         
-        return result
+        return final_outcome
+
+    # A simple function to calculate odds based on the specific approach and the player's current stats.
+    def calculate_outcome_odds(pc, approach_type):
+        
+        # Base chances (total must equal 100 in the end)
+        good = 40
+        mixed = 40
+        bad = 20
+        
+        # MODIFIERS based on Player Stats
+        if approach_type == "loud":
+            # low social capital means loud approaches arent that easy
+            if pc.social_capital <= 50:
+                bad += 30
+                good -= 10
+                mixed -= 20
+        
+        elif approach_type == "quiet":
+            # Even quiet things are risky for undocumented folks
+            if pc.immigration_status <= 50:
+                bad += 10
+                mixed += 10
+                good -= 20
+            # high economic capital means quiet things are easy
+            if pc.economic_capital >= 50:
+                good += 30
+                bad -= 10
+                mixed -= 20
+
+        # Normalize to ensure they don't go below 0 or crazy high
+        # (This is a simplified normalization for the template)
+        total = good + mixed + bad
+        return {
+            "good": int((good / total) * 100),
+            "mixed": int((mixed / total) * 100),
+            "bad": int((bad / total) * 100)
+        }
+        
 
 # 2. THE SCREEN DEFINITION
-screen dice_roll(target, final_value):
+screen dice_roll(final_value):
     modal True
     zorder 100
     
@@ -125,15 +187,16 @@ screen dice_roll(target, final_value):
             text "[current_display]" size 100 color "#fff" xalign 0.5
 
             if is_finished:
-                if final_value >= target:
-                    text "SUCCESS" color "#0f0" xalign 0.5 size 50 bold True
-                else:
-                    text "FAILURE" color "#f00" xalign 0.5 size 50 bold True
+                # if final_value >= target:
+                #     text "GOOD" color "#0f0" xalign 0.5 size 50 bold True
+                # else:
+                #     text "FAILURE" color "#f00" xalign 0.5 size 50 bold True
                 
                 # Returns True (success) or False (fail) to the game script
                 textbutton "Continue":
                     xalign 0.5
-                    action Return(final_value >= target)
+                    # just return true
+                    action Return(True)
 
     # THE ANIMATION LOGIC
     # This timer runs only while the animation isn't finished
@@ -151,13 +214,106 @@ screen dice_roll(target, final_value):
 
 
 
-
-# 3. THE GAME START
 label start:
+
+    scene black
+    centered "{b}WELCOME TO THE RESISTANCE{/b}"
     
-    # Initialize the character object here
-    #$ pc = PlayerCharacter()
-    #"You arrive at the airport. "
+    jump quest_hub
+
+label quest_hub:
+    # Show the player the world map
+    scene bg world_map # replace with our world map later
+
+    "Struggles are happening everywhere. Please select a location"
+
+    # The player selects a location from the world map
+    menu:
+        "Select Quest: Quest 01":
+            jump quest_01
+        "Select Quest: Quest 02":
+            jump quest_02
+        "End Game":
+            return
+
+
+
+label quest_01:
+    # First we have to narrate the quest
+    "Once upon a time, lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+
+    # Then the player chooses their character
+    call character_select
+
+    # Give the player some exposition
+    "Some expositional stuff happens. Describe scene here..."
+
+    # Then the player has a choice where they see probabilities of their action
+    window hide
+    call screen risk_assessment_menu(
+        pc,
+        prompt="How do you approach the situation?",
+        option1_name="Loud", option1_type="loud",
+        option2_name="Quiet", option2_type="quiet",
+        option3_name="Violent", option3_type="violent"
+    )
+
+    # The screen returns the type chosen (e.g., "loud")
+    $ chosen_approach = _return
+
+    # 5. Dice Rolling Animation
+    #show text "{size=50}CALCULATING RISK...{/size}" at truecenter
+    #pause 2.0 # Suspense
+
+    # Calculate result logic
+    $ current_outcome = perform_roll(pc, chosen_approach)
+
+    #hide text
+
+    # 6. Outcome & Aftermath
+    if current_outcome == "good":
+        "SUCCESS!"
+        "The plan worked better than expected. Your stats aligned perfectly with the moment."
+    elif current_outcome == "mixed":
+        "PARTIAL SUCCESS."
+        "You managed to do it, but at a cost. The system noticed you."
+    else:
+        "FAILURE."
+        "Disaster. The system pushed back hard."
+
+    # Conditional text based on stats
+    if pc.get_profile_friction() > 5:
+        "Because your Targeting Level is high, a drone lingers over you specifically, recording your face."
+
+    # Escalation & Second Choice
+    "The situation escalates. ........ You have another moment to react"
+
+    menu:
+        "Disperse into the crowd immediately.":
+            $ final_choice = "flee"
+        "Stand your ground and document the abuse.":
+            $ final_choice = "document"
+        "Call your NGO contact for legal aid.":
+            $ final_choice = "legal"
+
+    # Epilogue Reflection
+    if final_choice == "flee":
+        "You vanished into the night. Safe, but the message was weak."
+    elif final_choice == "document":
+        "You have footage. It might help later, but you are now on a watchlist."
+
+    # 8. Final Text & Loop
+    "The quest concludes. The struggle continues elsewhere."
+
+    jump quest_hub
+
+
+label quest_02:
+    "Placeholder for Quest 2."
+    jump quest_hub
+
+label character_select:
+    # ==== TOM's CHARACTER SELECTION CODE ====
 
     # 1. Generate 3 random characters
     $ candidate_1 = PlayerCharacter()
@@ -176,52 +332,13 @@ label start:
     show screen stats_button_overlay
     
     "You have selected: [pc.codename]."
-    "You arrive at the airport..."
 
-    jump airport_encounter
-
-
-label airport_encounter:
-    # Calculate chances based on the specific character created above
-    $ chance_comply = 50
-    $ chance_rights = 75 
-
-    "Security stops you."
-
-    menu:
-        "Comply ([chance_comply]\% success)":
-            # Note: We call perform_roll, not roll_dice
-            $ success = perform_roll(chance_comply)
-            
-            if success:
-                jump comply_success
-            else:
-                jump comply_fail
-
-        "State your rights ([chance_rights]\% success)":
-            $ success = perform_roll(chance_rights)
-            
-            if success:
-                jump rights_success
-            else:
-                jump rights_fail
-
-# 4. RESOLUTION LABELS
-label comply_success:
-    "You comply. They verify your documents and let you through."
     return
 
-label comply_fail:
-    "You comply, but they decide to detain you anyway."
-    return
 
-label rights_success:
-    "You quote the relevant statutes. They back off."
-    return
-
-label rights_fail:
-    "They don't care about your rights. Things escalate."
-    return
+# ==============================================================================================================
+# SCREENS
+# ==============================================================================================================
 
 
 
@@ -455,3 +572,64 @@ screen character_select(char_candidates):
                         
                         # 4. MYSTERY WARNING
                         #text "<i>Resources & Status unknown...</i>" xalign 0.5 color "#555" size 16
+
+
+screen risk_assessment_menu(pc, prompt, option1_name, option1_type, option2_name, option2_type, option3_name, option3_type):
+    modal True
+    
+    # Calculate odds for display
+    $ odds1 = calculate_outcome_odds(pc, option1_type)
+    $ odds2 = calculate_outcome_odds(pc, option2_type)
+    $ odds3 = calculate_outcome_odds(pc, option3_type)
+
+    frame:
+        xalign 0.5
+        yalign 0.5
+        padding (40, 40)
+        vbox:
+            spacing 20
+            text prompt size 30 xalign 0.5 bold True
+            
+            # OPTION 1
+            button:
+                action Return(option1_type)
+                xfill True
+                padding (20, 20)
+                hbox:
+                    text option1_name
+                    # This text only shows on hover (simple version) or always shows.
+                    # Let's show a "Risk" label.
+                
+                # TOOLTIP LOGIC
+                tooltip "PROJECTIONS:\nSuccess: {}%\nComplication: {}%\nFailure: {}%".format(odds1['good'], odds1['mixed'], odds1['bad'])
+                background "#333" hover_background "#555"
+
+            # OPTION 2
+            button:
+                action Return(option2_type)
+                xfill True
+                padding (20, 20)
+                text option2_name
+                tooltip "PROJECTIONS:\nSuccess: {}%\nComplication: {}%\nFailure: {}%".format(odds2['good'], odds2['mixed'], odds2['bad'])
+                background "#333" hover_background "#555"
+
+            # OPTION 3
+            button:
+                action Return(option3_type)
+                xfill True
+                padding (20, 20)
+                text option3_name
+                tooltip "PROJECTIONS:\nSuccess: {}%\nComplication: {}%\nFailure: {}%".format(odds3['good'], odds3['mixed'], odds3['bad'])
+                background "#333" hover_background "#555"
+                
+    # THE TOOLTIP DISPLAY AREA
+    # This box displays the text defined in the button's "tooltip" property
+    $ tooltip = GetTooltip()
+    if tooltip:
+        frame:
+            xalign 0.9
+            yalign 0.5
+            xmaximum 300
+            padding (20, 20)
+            background "#000000cc"
+            text "[tooltip]" color "#fff" size 22
