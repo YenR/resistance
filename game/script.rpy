@@ -118,9 +118,9 @@ init python:
         else:
             final_outcome = "bad"
 
-        # 3. Call the screen and WAIT for the player to click "Continue"
-        # The screen will return True or False based on the result
-        renpy.call_screen("dice_roll", final_value=final_roll)
+        # 3. Call the screen and PASS the outcome variable so we can see it
+        # We add 'outcome=final_outcome' here
+        renpy.call_screen("dice_roll", final_value=final_roll, outcome=final_outcome)
         
         return final_outcome
 
@@ -163,18 +163,18 @@ init python:
         
 
 # 2. THE SCREEN DEFINITION
-screen dice_roll(final_value):
+screen dice_roll(final_value, outcome): 
     modal True
     zorder 100
     
     # Screen variables to track the animation state
-    default rolls_left = 20  # How many times the number flickers
+    default rolls_left = 20
     default current_display = 0
     default is_finished = False
 
     frame:
         align (0.5, 0.5)
-        padding (40, 40)
+        padding (60, 60) # Increased padding slightly for looks
         background "#000000cc"
         
         vbox:
@@ -187,28 +187,34 @@ screen dice_roll(final_value):
             text "[current_display]" size 100 color "#fff" xalign 0.5
 
             if is_finished:
-                # if final_value >= target:
-                #     text "GOOD" color "#0f0" xalign 0.5 size 50 bold True
-                # else:
-                #     text "FAILURE" color "#f00" xalign 0.5 size 50 bold True
+                # Display the Outcome Text based on the result passed from python
+                if outcome == "good":
+                    text "SUCCESS" color "#00ff00" xalign 0.5 size 60 bold True
+                elif outcome == "mixed":
+                    text "COMPLICATION" color "#ffaa00" xalign 0.5 size 60 bold True
+                else:
+                    text "FAILURE" color "#ff0000" xalign 0.5 size 60 bold True
                 
+                null height 20
+
                 # Returns True (success) or False (fail) to the game script
                 textbutton "Continue":
                     xalign 0.5
-                    # just return true
+                    padding (40, 15)
+                    background "#444"
+                    hover_background "#666"
+                    text_size 30
                     action Return(True)
 
     # THE ANIMATION LOGIC
-    # This timer runs only while the animation isn't finished
     if not is_finished:
         timer 0.05 repeat True action If(
             rolls_left > 0, 
-            # If still rolling: decrease counter and pick random number
-            [SetScreenVariable("rolls_left", rolls_left - 1), SetScreenVariable("current_display", renpy.random.randint(1, 20))],
-            # If done rolling: set flag and show final number
+            # If still rolling:
+            [SetScreenVariable("rolls_left", rolls_left - 1), SetScreenVariable("current_display", renpy.random.randint(1, 99))],
+            # If done rolling:
             [SetScreenVariable("is_finished", True), SetScreenVariable("current_display", final_value)]
         )
-
 
 
 
@@ -261,7 +267,7 @@ label quest_01:
     # The screen returns the type chosen (e.g., "loud")
     $ chosen_approach = _return
 
-    # 5. Dice Rolling Animation
+    # Dice Rolling Animation
     #show text "{size=50}CALCULATING RISK...{/size}" at truecenter
     #pause 2.0 # Suspense
 
@@ -270,15 +276,15 @@ label quest_01:
 
     #hide text
 
-    # 6. Outcome & Aftermath
+    # Outcome & Aftermath
     if current_outcome == "good":
-        "SUCCESS!"
+        #"SUCCESS!"
         "The plan worked better than expected. Your stats aligned perfectly with the moment."
     elif current_outcome == "mixed":
-        "PARTIAL SUCCESS."
+        #"PARTIAL SUCCESS."
         "You managed to do it, but at a cost. The system noticed you."
     else:
-        "FAILURE."
+        #"FAILURE."
         "Disaster. The system pushed back hard."
 
     # Conditional text based on stats
@@ -302,7 +308,7 @@ label quest_01:
     elif final_choice == "document":
         "You have footage. It might help later, but you are now on a watchlist."
 
-    # 8. Final Text & Loop
+    #  Final Text & Loop
     "The quest concludes. The struggle continues elsewhere."
 
     jump quest_hub
@@ -379,7 +385,7 @@ screen char_stats():
             null height 20
             
             textbutton "Close":
-                action Return()
+                action Hide("char_stats") # Hide instead of Return bc we called it using show()
                 xalign 0.5
                 padding (40, 15)
                 background "#444"
@@ -485,7 +491,7 @@ screen char_stats():
                 
                 textbutton "Close":
                     xalign 0.5
-                    action Return()
+                    action Hide("char_stats") # Hide instead of Return bc we called it using show()
                     padding (50, 20)
                     text_size 30
                     background "#444"
