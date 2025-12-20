@@ -10,13 +10,70 @@ init python:
 
     class PlayerCharacter:
         def __init__(self):
-            # Example traits
-            self.background = random.choice(["Law Student", "Journalist", "Laborer"])
-            self.identity_markers = ["Muslim", "Woman"] 
-            self.base_difficulty = 10 
+            # --- 1. IMMUTABLE TAGS ---
+            self.race = random.choice(["White", "Black", "South Asian", "Middle Eastern"])
+            self.gender = random.choice(["Cis Woman", "Trans Woman", "Non-binary", "Cis Man", "Trans Man"])
             
-            # Apply background bonuses
-            self.law_bonus = 20 if self.background == "Law Student" else 0
+            # Skin Tone Logic
+            if self.race == "White":
+                self.skin_tone = "Light"
+            else:
+                self.skin_tone = random.choice(["Light-skinned", "Medium-skinned", "Dark-skinned"])
+            
+            self.origin = random.choice(["Global North", "Global South", "Conflict Zone"])
+            
+            # --- NEW: DISABILITY ---
+            # "Invisible" disabilities might not add immediate friction but affect stamina
+            # "Visible" disabilities (Wheelchair, Cane) add friction in inaccessible spaces
+            self.disability = random.choice([
+                "None", 
+                "Mobility (Cane)", 
+                "Mobility (Wheelchair)", 
+                "Deaf/HoH", 
+                "Chronic Pain", 
+                "Neurodivergent"
+            ])
+
+            # --- 2. MUTABLE METERS ---
+            self.economic_capital = random.randint(20, 80)
+            self.social_capital = random.randint(20, 80)
+            self.mental_resilience = 100 
+            self.immigration_status = random.randint(10, 60) 
+
+            # --- 3. SKILLS & LANGUAGES ---
+            self.skills = {
+                "Legal Literacy": random.choice([True, False]),
+                "Bureaucratic Navigation": random.choice([True, False]),
+                "Code Switching": random.choice([True, False]),
+            }
+            
+            # NEW: Language Dictionary (Name: Is_Known)
+            self.languages = {
+                "Mother Tongue": True, # Always known
+                "English": random.choice([True, False]),
+                "Local Language": random.choice([True, False])
+            }
+
+        def get_profile_friction(self):
+            friction = 0
+            
+            # Standard Bias
+            if self.race != "White": friction += 2
+            if self.skin_tone == "Dark-skinned": friction += 3
+            #if self.visible_religion: friction += 5
+            if self.gender in ["Trans Woman", "Non-binary"]: friction += 4
+            if self.origin == "Conflict Zone": friction += 5
+            
+            # Disability Bias (Ableism)
+            if self.disability != "None": 
+                friction += 3
+                
+            # Language Barrier Friction
+            if not self.languages["Local Language"]:
+                friction += 4 # High penalty for not speaking the local language
+                
+            return friction
+    
 
     def perform_roll(target_percent):
         # 1. Calculate the Target Score (same math as before)
@@ -78,20 +135,26 @@ screen dice_roll(target, final_value):
             [SetScreenVariable("is_finished", True), SetScreenVariable("current_display", final_value)]
         )
 
+
+
+
+
+
+
 # 3. THE GAME START
 label start:
     
     # Initialize the character object here
     $ pc = PlayerCharacter()
 
-    "You arrive at the airport. Background: [pc.background]."
+    "You arrive at the airport. "
 
     jump airport_encounter
 
 label airport_encounter:
     # Calculate chances based on the specific character created above
     $ chance_comply = 50
-    $ chance_rights = 75 + pc.law_bonus 
+    $ chance_rights = 75 
 
     "Security stops you."
 
@@ -131,50 +194,134 @@ label rights_fail:
     return
 
 
+
+
+
+## char stats screen
+
 screen char_stats():
     modal True
-    tag menu # This creates the "game menu" behavior (replaces Save/Load screens)
-
-    # A dark background to dim the game
-    add "#000000aa"
+    tag menu
+    add "#1a1a1aee"
 
     frame:
         align (0.5, 0.5)
+        xsize 1400
+        ysize 1000
         padding (50, 50)
-        xsize 600
         
         vbox:
             spacing 20
             
-            label "Character Sheet" xalign 0.5 text_size 40
+            label "IDENTITY & STATUS" xalign 0.5 text_size 50
             
-            null height 10 
-            
-            # FIXED: Using {b} instead of <b>
-            text "{b}Background:{/b} [pc.background]" size 24
-            
-            $ identity_str = ", ".join(pc.identity_markers)
-            text "{b}Identity:{/b} [identity_str]" size 24
-            
-            null height 10
-            
-            label "Active Modifiers" xalign 0.0 text_size 28
+            null height 20
             
             hbox:
-                spacing 200 
-                vbox:
-                    text "Base Difficulty:" color "#aaa"
-                    text "Law Bonus:" color "#aaa"
+                spacing 80 # More space between columns
                 
+                # --- COLUMN 1: IDENTITY & DISABILITY ---
                 vbox:
-                    text "[pc.base_difficulty]" xalign 1.0
-                    text "+[pc.law_bonus]" color ("#0f0" if pc.law_bonus > 0 else "#fff") xalign 1.0
+                    xsize 350
+                    label "Profile" text_size 35 text_color "#aaa"
+                    
+                    text "Origin: [pc.origin]"
+                    text "Race: [pc.race]"
+                    text "Skin: [pc.skin_tone]"
+                    text "Gender: [pc.gender]"
+                    
+                    # Disability Display
+                    if pc.disability == "None":
+                        text "Disability: None" color "#888"
+                    else:
+                        text "Disability: [pc.disability]" color "#ffaa00"
 
+                    #if pc.visible_religion:
+                    #    text "Vis. Religion: Yes" color "#ffaa00"
+                    #else:
+                    #    text "Vis. Religion: No"
+                        
+                    null height 20
+                    
+                    # Friction Score moved here for visibility
+                    $ friction = pc.get_profile_friction()
+                    frame:
+                        background "#330000"
+                        padding (10, 10)
+                        text "Systemic Friction: +[friction]" color "#ff6666" size 28
+
+
+                # --- COLUMN 2: SKILLS & LANGUAGES ---
+                vbox:
+                    xsize 300
+                    label "Competencies" text_size 35 text_color "#aaa"
+                    
+                    # Language Section
+                    label "{size=24}Languages{/size}" text_color "#ddd"
+                    for lang, known in pc.languages.items():
+                        if known:
+                            text "✓ [lang]" color "#88ff88"
+                        else:
+                            text "✘ [lang]" color "#555" # Greyed out X
+                    
+                    null height 15
+                    
+                    # Skills Section
+                    label "{size=24}Skills{/size}" text_color "#ddd"
+                    for skill, has_skill in pc.skills.items():
+                        if has_skill:
+                            text "• [skill]" color "#88ff88"
+                        else:
+                            text "• [skill]" color "#444"
+
+
+                # --- COLUMN 3: RESOURCES (BARS) ---
+                vbox:
+                    xsize 400
+                    spacing 15
+                    label "Resources" text_size 35 text_color "#aaa"
+
+                    vbox:
+                        text "Economic Capital ([pc.economic_capital]%)" size 22
+                        bar:
+                            value pc.economic_capital 
+                            range 100 
+                            ysize 25 
+                            right_bar Solid("#333333")
+                            left_bar Solid("#f1c40f")
+
+                    vbox:
+                        text "Social Network ([pc.social_capital]%)" size 22
+                        bar:
+                            value pc.social_capital 
+                            range 100 
+                            ysize 25 
+                            right_bar Solid("#333333")
+                            left_bar Solid("#3498db")
+
+                    vbox:
+                        text "Immigration Security ([pc.immigration_status]%)" size 22
+                        bar:
+                            value pc.immigration_status 
+                            range 100 
+                            ysize 25 
+                            right_bar Solid("#333333")
+                            left_bar Solid("#2ecc71")
+
+                    vbox:
+                        text "Mental Resilience ([pc.mental_resilience]%)" size 22
+                        bar:
+                            value pc.mental_resilience 
+                            range 100 
+                            ysize 25 
+                            right_bar Solid("#333333")
+                            left_bar Solid("#e74c3c")
+            
             null height 30
             
-            # FIXED: 'Return()' exits the menu correctly
-            textbutton "Close Stats":
+            textbutton "Close":
                 xalign 0.5
-                action Return() 
-                padding (20, 10)
+                action Return()
+                padding (50, 20)
                 text_size 30
+                background "#444"
