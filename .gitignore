@@ -4,6 +4,9 @@ game/saves/
 game/cache/*
 game/saves/*.save
 
+errors.txt
+log.txt
+traceback.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
