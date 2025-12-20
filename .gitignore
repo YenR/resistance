@@ -1,3 +1,10 @@
+*.save
+game/cache/
+game/saves/
+game/cache/*
+game/saves/*.save
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
