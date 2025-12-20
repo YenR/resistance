@@ -225,7 +225,9 @@ label start:
     scene black
     centered "{b}WELCOME TO THE RESISTANCE{/b}"
     
-    jump quest_hub
+    jump map
+
+    #jump quest_hub
 
 label quest_hub:
     # Show the player the world map
@@ -311,12 +313,14 @@ label quest_01:
     #  Final Text & Loop
     "The quest concludes. The struggle continues elsewhere."
 
-    jump quest_hub
+    #jump quest_hub
+    jump map
 
 
 label quest_02:
     "Placeholder for Quest 2."
-    jump quest_hub
+    #jump quest_hub
+    jump map
 
 label character_select:
     # ==== TOM's CHARACTER SELECTION CODE ====
