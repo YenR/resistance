@@ -172,3 +172,58 @@ screen char_stats():
                     padding (50, 20)
                     text_size 30
                     background "#444"
+
+
+
+screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, option2tt):
+    modal True
+    
+    # Calculate odds for display
+    #$ odds1 = calculate_outcome_odds(pc, option1_type)
+    #$ odds2 = calculate_outcome_odds(pc, option2_type)
+    #$ odds3 = calculate_outcome_odds(pc, option3_type)
+
+    frame:
+        xalign 0.5
+        yalign 0.5
+        padding (40, 40)
+
+        vbox:
+            spacing 20
+            text prompt size 30 xalign 0.5 bold True
+            
+            # OPTION 1
+            button:
+                action Return(option1)
+                xfill True
+                padding (20, 20)
+                hbox:
+                    text option1
+                
+                # TOOLTIP LOGIC
+                tooltip option1tt
+                background "#333" hover_background "#555"
+
+            # OPTION 2
+            button:
+                action Return(option2)
+                xfill True
+                padding (20, 20)
+                hbox:
+                    text option2
+
+                tooltip option2tt
+                background "#333" hover_background "#555"
+
+                
+    # THE TOOLTIP DISPLAY AREA
+    # This box displays the text defined in the button's "tooltip" property
+    $ tooltip = GetTooltip()
+    if tooltip:
+        frame:
+            xalign 0.9
+            yalign 0.5
+            xmaximum 300
+            padding (20, 20)
+            background "#000000cc"
+            text "[tooltip]" color "#fff" size 22

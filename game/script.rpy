@@ -15,6 +15,7 @@ define sys = Character("System", color="#ff5555") # The antagonistic force
 default current_outcome = "none"
 default chosen_approach = "none"
 
+define config.menu_include_disabled = True
 
 # ==============================================================================
 # PYTHON LOGIC
