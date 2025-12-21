@@ -26,10 +26,23 @@ init python:
     import time
 
     class PlayerCharacter:
-        def __init__(self):
+        def __init__(self, portrait_image):
             # --- 1. IMMUTABLE TAGS ---
             self.race = random.choice(["White", "Black", "South Asian", "Middle Eastern"])
-            self.gender = random.choice(["Cis Woman", "Trans Woman", "Non-binary", "Cis Man", "Trans Man"])
+            
+            #self.gender = random.choice(["Cis Woman", "Trans Woman", "Non-binary", "Cis Man", "Trans Man"])
+
+            # --- WEIGHTED GENDER LOGIC ---
+            # We define the options and the 'weights' (probabilities)
+            # Make sure weights sum up to 100 for easy percentage calculation.
+            gender_options = ["Cis Woman", "Cis Man", "Non-binary", "Trans Woman", "Trans Man"]
+            
+            # Example: Trans = 10% each. Cis = 30% each. NB = 20%. 
+            # Total: 30+30+20+10+10 = 100%
+            gender_weights = [30, 30, 20, 10, 10]
+            
+            # random.choices returns a list, so we grab the first item [0]
+            self.gender = random.choices(gender_options, weights=gender_weights, k=1)[0]
             
             # Skin Tone Logic
             if self.race == "White":
@@ -76,11 +89,12 @@ init python:
             #self.placeholder_color = random.choice(["#e74c3c", "#3498db", "#f1c40f", "#9b59b6", "#2ecc71"])
 
             # Pick a random image file name from your images folder
-            self.portrait = random.choice([
-                "images/portrait1.png",
-                "images/portrait2.png",
-                "images/portrait3.png"
-            ])
+            #self.portrait = random.choice([
+            #    "images/portrait1.png",
+            #    "images/portrait2.png",
+            #    "images/portrait3.png"
+            #])
+            self.portrait = portrait_image
 
         def get_profile_friction(self):
             friction = 0
@@ -325,10 +339,22 @@ label quest_02:
 label character_select:
     # ==== TOM's CHARACTER SELECTION CODE ====
 
-    # 1. Generate 3 random characters
-    $ candidate_1 = PlayerCharacter()
-    $ candidate_2 = PlayerCharacter()
-    $ candidate_3 = PlayerCharacter()
+    # 1. Define your pool of all possible images
+    $ all_portraits = [
+        "images/portrait1.png",
+        "images/portrait2.png",
+        "images/portrait3.png"
+    ]
+    
+    # 2. Pick 3 UNIQUE images from that list. 
+    # random.sample picks unique items. It will crash if you ask for 3 but only have 2 images.
+    $ selected_portraits = random.sample(all_portraits, 3)
+
+    # 3. Generate the characters, passing the specific images
+    # We use selected_portraits[0], [1], and [2]
+    $ candidate_1 = PlayerCharacter(selected_portraits[0])
+    $ candidate_2 = PlayerCharacter(selected_portraits[1])
+    $ candidate_3 = PlayerCharacter(selected_portraits[2])
     
     # 2. Put them in a list
     $ options = [candidate_1, candidate_2, candidate_3]
@@ -339,7 +365,7 @@ label character_select:
 
     # 4. The game begins with the selected 'pc'
     # Show the overlay button for stats now that the game has started
-    show screen stats_button_overlay
+    #show screen stats_button_overlay
     
     "You have selected: [pc.codename]."
 
@@ -370,135 +396,6 @@ screen stats_button_overlay():
             text_hover_color "#cccccc"       # Hover (Light Grey)
             text_insensitive_color "#444444" # Disabled/No Character (Dark Grey)
 
-## char stats screen
-
-screen char_stats():
-    modal True
-    tag menu
-    add "#1a1a1aee"
-
-    # --- SAFETY CHECK: CRASH PROTECTION ---
-    if pc is None:
-        vbox:
-            align (0.5, 0.5)
-            spacing 20
-            
-            text "No Character Selected Yet" color "#fff" size 40 xalign 0.5
-            text "Please start the game and choose a profile first." color "#aaa" size 20 xalign 0.5
-            
-            null height 20
-            
-            textbutton "Close":
-                action Hide("char_stats") # Hide instead of Return bc we called it using show()
-                xalign 0.5
-                padding (40, 15)
-                background "#444"
-
-    # --- NORMAL SCREEN (Only runs if pc exists) ---
-    else:
-        frame:
-            align (0.5, 0.5)
-            xsize 1200
-            ysize 800
-            padding (50, 50)
-            
-            vbox:
-                spacing 20
-                
-                label "IDENTITY & STATUS" xalign 0.5 text_size 50
-                
-                null height 20
-                
-                hbox:
-                    spacing 80 
-                    
-                    # --- COLUMN 1: IDENTITY & DISABILITY ---
-                    vbox:
-                        xsize 350
-                        label "Profile" text_size 35 text_color "#aaa"
-                        
-                        text "Origin: [pc.origin]"
-                        text "Ethnicity: [pc.race]"
-                        text "Skin: [pc.skin_tone]"
-                        text "Gender: [pc.gender]"
-                        
-                        if pc.disability == "None":
-                            text "Disability: None" color "#888"
-                        else:
-                            text "Disability: [pc.disability]" color "#ffaa00"
-
-                        null height 20
-                        
-                        $ friction = pc.get_profile_friction()
-                        frame:
-                            background "#330000"
-                            padding (10, 10)
-                            text "Systemic Friction: +[friction]" color "#ff6666" size 28
-
-
-                    # --- COLUMN 2: SKILLS & LANGUAGES ---
-                    vbox:
-                        xsize 300
-                        label "Competencies" text_size 35 text_color "#aaa"
-                        
-                        label "{size=24}Languages{/size}" text_color "#ddd"
-                        for lang, known in pc.languages.items():
-                            if known:
-                                text "✓ [lang]" color "#88ff88"
-                            else:
-                                text "✘ [lang]" color "#555" 
-                        
-                        null height 15
-                        
-                        label "{size=24}Skills{/size}" text_color "#ddd"
-                        for skill, has_skill in pc.skills.items():
-                            if has_skill:
-                                text "• [skill]" color "#88ff88"
-                            else:
-                                text "• [skill]" color "#444"
-
-
-                    # --- COLUMN 3: RESOURCES ---
-                    vbox:
-                        xsize 400
-                        spacing 15
-                        label "Resources" text_size 35 text_color "#aaa"
-
-                        vbox:
-                            text "Economic Capital ([pc.economic_capital]%)" size 22
-                            bar:
-                                value pc.economic_capital 
-                                range 100 
-                                ysize 25 
-                                right_bar Solid("#333333")
-                                left_bar Solid("#f1c40f")
-
-                        vbox:
-                            text "Social Network ([pc.social_capital]%)" size 22
-                            bar:
-                                value pc.social_capital 
-                                range 100 
-                                ysize 25 
-                                right_bar Solid("#333333")
-                                left_bar Solid("#3498db")
-
-                        vbox:
-                            text "Immigration Security ([pc.immigration_status]%)" size 22
-                            bar:
-                                value pc.immigration_status 
-                                range 100 
-                                ysize 25 
-                                right_bar Solid("#333333")
-                                left_bar Solid("#2ecc71")
-                
-                null height 30
-                
-                textbutton "Close":
-                    xalign 0.5
-                    action Hide("char_stats") # Hide instead of Return bc we called it using show()
-                    padding (50, 20)
-                    text_size 30
-                    background "#444"
 
 screen character_select(char_candidates):
     modal True

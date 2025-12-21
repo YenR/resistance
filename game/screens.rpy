@@ -241,20 +241,30 @@ screen quick_menu():
     zorder 100
 
     if quick_menu:
+        frame:
+            # Position the bar at the bottom center
+            xalign 0.5
+            yalign 1.0 
+            
+            # Make it a semi-transparent black strip
+            background "#000000bb" 
+            
+            # Optional: Stretch it across the whole screen width
+            xfill True
 
-        hbox:
-            style_prefix "quick"
-            style "quick_menu"
+            hbox:
+                style_prefix "quick"
+                style "quick_menu"
 
-            #textbutton _("Back") action Rollback()
-            textbutton _("Stats") action ShowMenu("char_stats")
-            textbutton _("History") action ShowMenu('history')
-            #textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            #textbutton _("Q.Save") action QuickSave()
-            #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Prefs") action ShowMenu('preferences')
+                #textbutton _("Back") action Rollback()
+                textbutton _("Character") action Show("char_stats")
+                #textbutton _("History") action ShowMenu('history')
+                #textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+                #textbutton _("Auto") action Preference("auto-forward", "toggle")
+                textbutton _("Save") action ShowMenu('save')
+                #textbutton _("Q.Save") action QuickSave()
+                #textbutton _("Q.Load") action QuickLoad()
+                textbutton _("Preferences") action ShowMenu('preferences')
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
