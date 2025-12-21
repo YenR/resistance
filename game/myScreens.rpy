@@ -175,7 +175,7 @@ screen char_stats():
 
 
 
-screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, option2tt):
+screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, option2tt, option3=Null, option3tt=Null):
     modal True
     
     # Calculate odds for display
@@ -215,6 +215,17 @@ screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, op
                 tooltip option2tt
                 background "#333" hover_background "#555"
 
+            if option3 != Null:
+                button:
+                    action Return(option3)
+                    xfill True
+                    padding (20, 20)
+                    hbox:
+                        text option3
+
+                    tooltip option3tt
+                    background "#333" hover_background "#555"
+
                 
     # THE TOOLTIP DISPLAY AREA
     # This box displays the text defined in the button's "tooltip" property
@@ -227,3 +238,5 @@ screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, op
             padding (20, 20)
             background "#000000cc"
             text "[tooltip]" color "#fff" size 22
+
+

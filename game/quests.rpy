@@ -13,6 +13,10 @@ label quest_02:
     scene black
     with fade
 
+    default suspicion = 0
+    default mouthbox_louder = False
+    default seeds_of_change = 0
+
 
     "Once upon a time, there was a Storyteller."
 
@@ -113,13 +117,64 @@ label quest_storyteller_library_1:
 
     "Behind the desk, a librarian looks up."
 
-    menu:
-        "How do you approach?"
-        "Ask for Local History":
-            jump quest_storyteller_library_localhistory
+    #menu:
+    #    "How do you approach?"
+    #    "Ask for Local History":
+    #        jump quest_storyteller_library_localhistory
+    #
+    #    "Mention the Mouth-Box":
+    #        jump quest_storyteller_library_mouthbox
 
-        "Mention the Mouth-Box":
-            jump quest_storyteller_library_mouthbox
+
+    #window hide
+    $ odds = 25 + (suspicion * 10) + pc.get_profile_friction()
+
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="How do you approach?",
+        option1="Ask for Local History", option1tt="0% Chance of Failure", 
+        option2="Mention the Mouth-Box", option2tt="{}% Chance of Failure".format(odds)
+    )
+    $ chosen_approach = _return
+
+    if chosen_approach == "Ask for Local History":
+        jump quest_storyteller_library_localhistory
+    else:
+        jump quest_storyteller_library_mouthbox
+
+        
+
+
+label quest_storyteller_library_mouthbox:
+
+    "You let your eyes drift to the Mouth-Box."
+    "\"It’s loud,\" you say, lightly."
+
+    "The librarian’s expression doesn’t change."
+    "If anything, it gets worse."
+
+    "\"Of course it’s loud,\" they say."
+    "\"That’s the point.\""
+
+    "The librarian’s jaw tightens."
+    "\"Keep your voice down,\" they mutter."
+    "\"And don’t make it my problem.\""
+
+    # 🎲 Dice roll
+    #$ last_roll = renpy.random.randint(1, 100)
+    #$ threshold = 55 + (suspicion * 10)
+
+    $ current_outcome = perform_roll_tom(odds)
+
+    if current_outcome == "good":
+        jump quest_storyteller_library_mouthbox_success
+    else:
+        jump quest_storyteller_library_mouthbox_fail
+
+    #if last_roll < threshold:
+    #    jump quest_storyteller_library_mouthbox_fail
+    #else:
+    #    jump quest_storyteller_library_mouthbox_success
 
 
 
@@ -146,34 +201,73 @@ label quest_storyteller_library_localhistory:
 
     jump quest_storyteller_library_aisles
 
+
+
 label quest_storyteller_library_aisles:
-    "-- not implemented -- "
-    jump map
+
+    "The shelves stretch long and narrow."
+
+    "The air smells of ink, glue, and dust"
+
+    "You run your fingers along spines stamped with the same bland title font."
+
+    "Every book seems to repeat itself."
+
+    "\"Official History of the Region: Revised Edition.\""
+
+    "\"The Story That Made Us.\""
+
+    "Over and over."
+
+    "But then—"
+
+    "A thinner spine, tucked between larger books."
+
+    "No title on the cover."
+
+    "You pull it out."
+
+    "The binding creaks like it hasn’t been opened in years."
+
+    "Inside: handwritten pages. Loose. Some torn."
+
+    "A single sentence, circled in red:"
+
+    "\"Before the Storyteller, we had too many voices.\""
+
+    "Below it, someone has scrawled in pencil:"
+
+    "\"Back hall. Knock twice.\""
+
+    "You glance down the aisle."
+
+    "No one is watching."
+
+    menu:
+        "What do you do with the book?"
+        "Put it back (upside down)":
+            "You slide the book back onto the shelf—upside down."
+            "Maybe someone else will find it too."
+            $ seeds_of_change += 1
+            jump quest_storyteller_library_readingroom
+
+        "Tear out the page":
+            "You gently tear out the page with the note."
+            "It crinkles in your pocket, louder than you'd like."
+            $ seeds_of_change += 2
+            $ suspicion += 1
+            "You return the book to its place—lighter now."
+            jump quest_storyteller_library_readingroom
+
+        "Keep the whole book":
+            "You tuck the entire book into your bag."
+            "It's heavier than it looks. It feels... dangerous."
+            $ seeds_of_change += 3
+            $ suspicion += 2
+            "You leave the shelf looking undisturbed. But you can feel its absence."
+            jump quest_storyteller_library_readingroom
 
 
-label quest_storyteller_library_mouthbox:
-
-    "You let your eyes drift to the Mouth-Box."
-    "\"It’s loud,\" you say, lightly."
-
-    "The librarian’s expression doesn’t change."
-    "If anything, it gets worse."
-
-    "\"Of course it’s loud,\" they say."
-    "\"That’s the point.\""
-
-    "The librarian’s jaw tightens."
-    "\"Keep your voice down,\" they mutter."
-    "\"And don’t make it my problem.\""
-
-    # 🎲 Dice roll
-    $ last_roll = renpy.random.randint(1, 100)
-    $ threshold = 55 + (suspicion * 10)
-
-    if last_roll < threshold:
-        jump quest_storyteller_library_mouthbox_fail
-    else:
-        jump quest_storyteller_library_mouthbox_success
 
 
 label quest_storyteller_library_mouthbox_success:
@@ -246,12 +340,15 @@ label quest_storyteller_library_mouthbox_fail:
 
 
 label quest_storyteller_supermarket_1:
-    "-- not implemented -- "
+    #"-- not implemented -- "
+    "You find yourself alone in the cold, nowhere to go..."
     jump map
-    
+
+
 
 label quest_storyteller_library_readingroom:
 
+    "You arrive in front of a door."
     "You knock twice."
 
     "Tap. Tap."
@@ -329,13 +426,133 @@ label quest_storyteller_readingroom_butt:
 
 label quest_storyteller_readingroom_test:
 
-    $ last_roll = renpy.random.randint(1, 100)
-    $ threshold = 55 + (suspicion * 10) + story_mod
+    "The steam from the tea curls in the space between you."
 
-    if last_roll < threshold:
-        jump quest_storyteller_readingroom_test_fail
+    "The two elders watch you."
+
+    "Not coldly. Just… waiting."
+
+    "\"So before we say more…\""
+
+    "\"We’d like to know who we’re speaking with.\""
+
+
+    $ odds1 = 25 + (suspicion * 10) + pc.get_profile_friction()/2 + 10
+
+    $ odds2 = 25 + (suspicion * 10) + pc.get_profile_friction() 
+
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="How do you respond?",
+        option1="Share a story of your own.", option1tt="{}% Chance of Failure".format(odds1), 
+        option2="Tell a rumor, not a story.", option2tt="{}.0% Chance of Failure".format(odds2),
+        option3="Ask them a question instead.", option3tt="Unknown chance of Failure"
+    )
+    $ chosen_approach = _return
+
+    if chosen_approach == "Share a story of your own.":
+        $ odds = odds1
+        "You begin to speak."
+        "Not confidently."
+        "But the words come anyway."
+        "A memory. A loss. A person who disappeared before they could tell theirs."
+        "The room stays still."
+    elif chosen_approach == "Tell a rumor, not a story.":
+        $ odds = odds2
+        "\"I heard about a village where the Mouth-Boxes started speaking in reverse.\""
+        "\"Someone slipped poetry into the wires.\""
+        "They chuckle, but their eyes stay cool."
+        "\"Clever,\" one says. \"But clever isn’t the same as honest.\""
     else:
+        "You glance around the room—books, steam, sweaters folded over the backs of chairs."
+
+        "\"What kind of tea is this?\""
+        "\"Did you make that sweater yourself? It’s very nice!\""
+        "They exchange a look."
+        "Then—soft laughter."
+        "\"Spiced winter root,\" one says. \"Rare, but worth it.\""
+        "\"And yes,\" the other replies, patting their sleeve. \"Old habit. Keeps the hands calm.\""
+        "They sip quietly."
+        "\"You’re stalling,\" one of them says at last. \"And that’s fine. But you’ll still have to decide.\""
+
+        "\"Are you ready to speak your own voice? Or are you just borrowing ours?\""
+
+        menu:
+            "Do you open up now?"
+            "Yes, share something personal.":
+                "You take a slow breath."
+                "Then begin."
+                "Not a speech. Just a few words. Honest ones."
+                "You see something change in their eyes—something like trust."
+                $ odds = 20
+            
+            "No, stay guarded.":
+                "You smile politely."
+                "\"Maybe some stories should wait.\""
+                "The notebook stays closed."
+                "\"Fair enough,\" one murmurs. \"But you’ll have a harder time convincing the world that way.\""
+                jump quest_storyteller_readingroom_test_fail
+        
+    $ current_outcome = perform_roll_tom(odds)
+
+    if current_outcome == "good":
         jump quest_storyteller_readingroom_test_success
+    else:
+        jump quest_storyteller_readingroom_test_fail
+
+
+    # menu:
+    #     "How do you respond?"
+    #     "Share a story of your own.":
+    #         "You begin to speak."
+    #         "Not confidently."
+    #         "But the words come anyway."
+    #         "A memory. A loss. A person who disappeared before they could tell theirs."
+    #         "The room stays still."
+
+    #     "Tell a rumor, not a story.":
+    #         "\"I heard about a village where the Mouth-Boxes started speaking in reverse.\""
+    #         "\"Someone slipped poetry into the wires.\""
+    #         "They chuckle, but their eyes stay cool."
+    #         "\"Clever,\" one says. \"But clever isn’t the same as honest.\""
+
+    #     "Ask them a question instead.":
+    #         "You glance around the room—books, steam, sweaters folded over the backs of chairs."
+
+    #         "\"What kind of tea is this?\""
+    #         "\"Did you make that sweater yourself? It’s very nice!\""
+    #         "They exchange a look."
+    #         "Then—soft laughter."
+    #         "\"Spiced winter root,\" one says. \"Rare, but worth it.\""
+    #         "\"And yes,\" the other replies, patting their sleeve. \"Old habit. Keeps the hands calm.\""
+    #         "They sip quietly."
+    #         "\"You’re stalling,\" one of them says at last. \"And that’s fine. But you’ll still have to decide.\""
+
+    #         "\"Are you ready to speak your own voice? Or are you just borrowing ours?\""
+
+    #         menu:
+    #             "Do you open up now?"
+    #             "Yes, share something personal.":
+    #                 "You take a slow breath."
+    #                 "Then begin."
+    #                 "Not a speech. Just a few words. Honest ones."
+    #                 "You see something change in their eyes—something like trust."
+                
+    #             "No, stay guarded.":
+    #                 "You smile politely."
+    #                 "\"Maybe some stories should wait.\""
+    #                 "The notebook stays closed."
+    #                 "\"Fair enough,\" one murmurs. \"But you’ll have a harder time convincing the world that way.\""
+    #                 jump quest_storyteller_readingroom_test_fail
+
+
+    # $ last_roll = renpy.random.randint(1, 100)
+    # $ threshold = 55 + (suspicion * 10) + story_mod
+
+    # if last_roll < threshold:
+    #     jump quest_storyteller_readingroom_test_fail
+    # else:
+    #     jump quest_storyteller_readingroom_test_success
 
 
 label quest_storyteller_readingroom_test_fail:
@@ -405,20 +622,44 @@ label quest_storyteller_readingroom_write_loop:
         "More names."
         "The manuscript grows heavier with every line."
 
-    # 🎲 Risk check each page (more suspicion = more danger)
-    $ roll = renpy.random.randint(1, 100)
-    $ risk = min(90, 35 + (suspicion * 12))  # tune numbers as you like
 
-    if roll <= risk:
-        jump quest_storyteller_readingroom_caught
+    $ odds = 15 + (suspicion * 12) + pc.get_profile_friction() 
+
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="Do you keep writing?",
+        option1="Keep writing", option1tt="{}% Chance of Failure".format(odds), 
+        option2="Stop. Hide the manuscript.", option2tt="0% Chance of Failure" 
+    )
+    $ chosen_approach = _return
+
+    if chosen_approach == "Keep writing":
+
+        $ current_outcome = perform_roll_tom(odds)
+        
+        if current_outcome == "good":
+            jump quest_storyteller_readingroom_write_loop
+        else:
+            jump quest_storyteller_readingroom_caught
+
+    else:
+        jump quest_storyteller_readingroom_escape
+
+
+    # 🎲 Risk check each page (more suspicion = more danger)
+    #$ roll = renpy.random.randint(1, 100)
+    #$ risk = min(90, 35 + (suspicion * 12))  # tune numbers as you like
+
+    #if roll <= risk:
+    #    jump quest_storyteller_readingroom_caught
 
     # 🧭 Choice: keep writing or stop
-    menu:
-        "Do you keep writing?"
-        "Keep writing":
-            jump quest_storyteller_readingroom_write_loop
-        "Stop. Hide the manuscript.":
-            jump quest_storyteller_readingroom_escape
+    #menu:
+    #    "Do you keep writing?"
+    #    "Keep writing":
+    #        jump quest_storyteller_readingroom_write_loop
+    #    "Stop. Hide the manuscript.":
+    #        jump quest_storyteller_readingroom_escape
 
 
 label quest_storyteller_readingroom_caught:
@@ -441,6 +682,7 @@ label quest_storyteller_readingroom_caught:
 
     "Eventually, the cell begins to resemble a box, too."
 
+    "Game Over."
     # TODO: consider adding game over message
 
     return
@@ -467,4 +709,7 @@ label quest_storyteller_readingroom_escape:
 
     # TODO: add popup that tells you seeds of change
 
+    $ renpy.notify(f"Congrats! You have scored {seeds_of_change} Seeds of Change points.")
+
+    stop music
     jump map

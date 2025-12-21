@@ -101,10 +101,11 @@ init python:
             friction = 0
             
             # Standard Bias
-            if self.race != "White": friction += 2
-            if self.skin_tone == "Dark-skinned": friction += 3
+            if self.race != "White": friction += 4
+            if self.skin_tone == "Dark-skinned": friction += 5
             #if self.visible_religion: friction += 5
-            if self.gender in ["Trans Woman", "Non-binary"]: friction += 4
+            if self.gender in ["Trans Woman", "Non-binary"]: friction += 5
+            if self.gender in ["Woman", "Trans Man"]: friction += 3
             if self.origin == "Conflict Zone": friction += 5
             
             # Disability Bias (Ableism)
@@ -113,7 +114,9 @@ init python:
                 
             # Language Barrier Friction
             if not self.languages["Local Language"]:
-                friction += 4 # High penalty for not speaking the local language
+                friction += 5 # High penalty for not speaking the local language
+            if not self.languages["English"]:
+                friction += 3 # High penalty for not speaking English
                 
             return friction
     
@@ -130,6 +133,25 @@ init python:
             final_outcome = "good"
         elif final_roll <= odds["good"] + odds["mixed"]:
             final_outcome = "mixed"
+        else:
+            final_outcome = "bad"
+
+        # 3. Call the screen and PASS the outcome variable so we can see it
+        # We add 'outcome=final_outcome' here
+        renpy.call_screen("dice_roll", final_value=final_roll, outcome=final_outcome)
+        
+        return final_outcome
+
+    def perform_roll_tom(odds):
+        #odds = calculate_outcome_odds(pc, approach_type)
+
+        # Determine the result immediately
+        final_roll = random.randint(1, 100)
+
+        final_outcome = None
+        
+        if final_roll > odds:
+            final_outcome = "good"
         else:
             final_outcome = "bad"
 
