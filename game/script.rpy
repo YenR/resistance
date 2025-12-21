@@ -275,7 +275,7 @@ label quest_hub:
     # The player selects a location from the world map
     menu:
         "Select Quest: Quest 01":
-            jump quest_01
+            jump quest_04
         "Select Quest: Quest 02":
             jump quest_02
         "End Game":

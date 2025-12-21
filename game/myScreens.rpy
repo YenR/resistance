@@ -15,7 +15,7 @@ screen mapScreen:
         focus_mask True
         idle "Map_area2_idle.png"
         hover "Map_area2.png"
-        action Jump("quest_01")
+        action Jump("quest_artresist_briefing")
 
         
 
