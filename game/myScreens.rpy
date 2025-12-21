@@ -1,28 +1,23 @@
 label myScreens:
 
 screen mapScreen:
-    add "Map.png"
+    add "Map_.png"
 
     #Room1
     imagebutton:
         focus_mask True
-        idle "map1-trans.png"
-        hover "map1.png"
+        idle "Map_area1_idle.png"
+        hover "Map_area1.png"
         action Jump("quest_01")
 
     #Room2
     imagebutton:
         focus_mask True
-        idle "map2-trans.png"
-        hover "map2.png"
+        idle "Map_area2_idle.png"
+        hover "Map_area2.png"
         action Jump("quest_02")
 
         
-    imagebutton:
-        focus_mask True
-        idle "map3-trans.png"
-        hover "map3.png"
-        action Jump("quest_03")
 
     #Room3
     #imagebutton:
