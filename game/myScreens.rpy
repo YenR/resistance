@@ -8,14 +8,14 @@ screen mapScreen:
         focus_mask True
         idle "Map_area1_idle.png"
         hover "Map_area1.png"
-        action Jump("quest_01")
+        action Jump("quest_02")
 
     #Room2
     imagebutton:
         focus_mask True
         idle "Map_area2_idle.png"
         hover "Map_area2.png"
-        action Jump("quest_02")
+        action Jump("quest_01")
 
         
 

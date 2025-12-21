@@ -331,14 +331,9 @@ label quest_01:
     jump map
 
 
-label quest_02:
-    "Placeholder for Quest 2."
-    #jump quest_hub
-    jump map
-
 label character_select:
     # ==== TOM's CHARACTER SELECTION CODE ====
-
+    window hide
     # 1. Define your pool of all possible images
     $ all_portraits = [
         "images/portrait1.png",
@@ -367,8 +362,8 @@ label character_select:
     # Show the overlay button for stats now that the game has started
     #show screen stats_button_overlay
     
-    "You have selected: [pc.codename]."
-
+    #"You have selected: [pc.codename]."
+    window show
     return
 
 
