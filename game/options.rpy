@@ -30,6 +30,18 @@ define config.version = "1.0"
 ## triple-quotes, and leave a blank line between paragraphs.
 
 define gui.about = _p("""
+Art: Tina
+
+Development: Shivi, Tom
+
+Writing: Shivi, Kseniia
+
+Music: Holiznacc0 (Free Music Archive).
+https://freemusicarchive.org/music/holiznacc0/scores/ukraine/
+
+Font: “Beachman Script” (1001Fonts).
+https://www.1001fonts.com/beachman-script-font.html
+
 """)
 
 
