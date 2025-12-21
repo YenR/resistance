@@ -17,6 +17,13 @@ screen mapScreen:
         hover "map2.png"
         action Jump("quest_02")
 
+        
+    imagebutton:
+        focus_mask True
+        idle "map3-trans.png"
+        hover "map3.png"
+        action Jump("quest_03")
+
     #Room3
     #imagebutton:
     #    if wing_strength >= 2:

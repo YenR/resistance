@@ -356,26 +356,76 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
-    add gui.main_menu_background
+    #add gui.main_menu_background
+    add "images/Title_screen_book2.png"
 
     ## This empty frame darkens the main menu.
-    frame:
-        style "main_menu_frame"
+    #frame:
+    #    style "main_menu_frame"
+
+    vbox:
+        xalign 0.31
+        yalign 0.55
+        spacing 20
+
+        text "A game about oppressive\nsystems and unique ways\nto counter them":
+            font "fonts/BeachmanScript.ttf"   # The font variable we defined earlier
+            size 54           # Size of text
+            color "#000000"   
+
+    vbox:
+        # Positioning: xalign 0.5 centers it, yalign 0.5 centers vertically
+        # You can use xpos/ypos for exact pixel coordinates instead.
+        xalign 0.65
+        yalign 0.5
+        spacing 30 # Space between buttons
+
+        # Start Game Button
+        textbutton "Start Resisting":
+            text_font "fonts/BeachmanScript.ttf"   # The font variable we defined earlier
+            text_size 72           # Size of text
+            text_color "#000000"   
+            text_hover_color "#971010" 
+            action Start()
+
+        # Preferences Button
+        textbutton "Settings":
+            text_font "fonts/BeachmanScript.ttf"
+            text_size 72
+            text_color "#000000"   
+            text_hover_color "#971010" 
+            action ShowMenu("preferences")
+
+        # Quit Button
+        textbutton "Credits":
+            text_font "fonts/BeachmanScript.ttf"
+            text_size 72
+            text_color "#000000"   
+            text_hover_color "#971010" 
+            action ShowMenu("about")
+
+        # Quit Button
+        textbutton "Quit":
+            text_font "fonts/BeachmanScript.ttf"
+            text_size 72
+            text_color "#000000"   
+            text_hover_color "#971010" 
+            action Quit(confirm=False)
 
     ## The use statement includes another screen inside this one. The actual
     ## contents of the main menu are in the navigation screen.
-    use navigation
+    #use navigation
 
-    if gui.show_name:
+    #if gui.show_name:
 
-        vbox:
-            style "main_menu_vbox"
-
-            text "[config.name!t]":
-                style "main_menu_title"
-
-            text "[config.version]":
-                style "main_menu_version"
+    #    vbox:
+    #        style "main_menu_vbox"
+#
+    #        text "[config.name!t]":
+    ##            style "main_menu_title"
+#
+    #        text "[config.version]":
+    #            style "main_menu_version"
 
 
 style main_menu_frame is empty
