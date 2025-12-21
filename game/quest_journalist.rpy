@@ -1,229 +1,275 @@
-$ news_company_backing = None
-
-label quest_04:
-    stop music
-
+label quest_journalist_briefing:
+    
+    # 1. SETUP & ATMOSPHERE
+    stop music fadeout 2.0
     scene black
     with fade
 
-    "{i}Once upon a time, there was a nation.{/i}"
+    #default suspicion = 0
+    #default seeds_of_change = 0
 
-    "{i}It spoke of unity.\nIt spoke of progress.\nIt never seemed to address the shadows.{/i}"
+    # 2. THE "ONCE UPON A TIME" INTRO (Theme requirement)
+    "Once upon a time, there was a nation."
+    " It spoke of unity. It spoke of progress."
+    " It never seemed to address the shadows."
 
-    "{i}But the shadows had stories of their own.{/i}"
+    "But the shadows had stories of their own."
+    " Every citizen was given a narrative."
+    " A carefully crafted account of history, of belonging, of duty."
 
-    "{i}Every citizen was given a narrative.\nA carefully crafted account of history, of belonging, of duty.\nIt was broadcast from every screen, echoed in every classroom.{/i}"
+    "The narrative spoke of a glorious past."
+    " There were no dissenting voices."
 
-    "{i}The narrative spoke of a glorious past.\nThe narrative spoke of a harmonious present.\nThere were no dissenting voices.{/i}"
-
-    "{i}And slowly, people stopped questioning the broadcast.\nThen they stopped sharing their own experiences.\nThey stopped remembering a time before the broadcast.{/i}"
-
-    "{i}Soon enough, it began to sound like the truth they knew was all there ever was.{/i}"
-
+    "And slowly, people stopped questioning the broadcast."
+    " Then they stopped sharing their own experiences."
     
-    #play music indian journalist
+    "Soon enough, it began to sound like the truth they knew was all there ever was."
+    ""
 
-    # 1. HIDE THE TEXTBOX
-    # This ensures the user doesn't see the empty dialogue box.
+    # 3. TITLE CARD
     window hide
-
-    # 2. SET THE SCENE
-    # 'scene black' clears the screen. 
-    # Then we show your title image. 'truecenter' aligns it perfectly.
     scene black
-    #show expression "images/quest1_page.png" as title_img at truecenter
-
-    # 3. FADE IN (The "Slow" part)
-    # Dissolve(3.0) means it takes 3.0 seconds to fade in.
+    # Placeholder for a title image, similar to quest_mini.rpy
+    show expression "images/Quest_page_Shadow.png" as title_img at truecenter
     with Dissolve(3.0)
-
-    # 4. WAIT FOR CLICK
-    # 'pause' without a number waits indefinitely until the user clicks.
     pause
-
-    # 5. FADE OUT & RESET
-    # We hide the image with a faster fade, then bring the window back.
     hide title_img
     with Dissolve(1.0)
-    
-    # Reveal the textbox again for the game to start
     window show
 
-    "Please select who is going to resist the government."
-
-
-    # Then the player chooses their character
+    "Please select who is going to resist the narrative."
+    # Assuming character_select is a global call defined elsewhere
     call character_select
 
-    "It\'s another busy workday at the news office."
+    jump quest_journalist_office
 
-    "You take in the controlled chaos of chipped desks, flickering fluorescent lights, and the clatter of repurposed typewriters."
 
-    "The air smells faintly of stale chai and cheap paper."
+label quest_journalist_office:
 
-    "Your boss sits behind their desk. An island of controlled order amongst the chaos."
-
-    "They do not look up as you approach."
-
-    "\"You wanted to see me. Make it quick. Deadline\'s breathing down my neck.\""
-
-    "You clutch your dossier."
+    # BEAT 1: THE BRIEFING (The Boss)
     
-    "The riots. The cover-up. The names."
-
-    "You remember the smoke."
-    
-    "You remember the silence that came after."
-
-    "You\'re not going to let the truth of the riots remain buried."
-    
-    "But you need the newspaper\'s support if you\'re gonna pull this off."
-
-    menu:
-        "How do you approach?"
-
-        "Present your file on past riots in the country, detailing potential government involvement and the need for investigation.":
-            jump quest_journalist_office_present
-        
-        "Hint towards your research to test the waters.":
-            jump quest_journalist_office_hint
-
-        "Say it was nothing. Begin the investigation by yourself.":
-            jump quest_journalist_office_nothing
-        
-label quest_journalist_office_present:
-    "You slam the folder down. Gently."
-
-    "\"The Riots from a few years ago...\", you say"
-    
-    "\"They weren't a clash, they were a purge.\""
-
-    "The boss stops typing."
-
-    "Slowly, they look at the file. They see the victims' names."
-
-    "They see the reports you have gathered."
-
-    "They understand the implication."
-
-    "They turn to you with an expression of distaste on their face."
-
-    "\"That's ancient history,\" they say."
-
-    "\"Why dredge this up now? The readership doesn't want to read about... that community.\""
-
-    if pc.social_capital >= 50:
-        jump quest_journalist_office_present_success
-    else:
-        jump quest_journalist_office_present_fail
-
-    
-
-label quest_journalist_office_present_success:
-    "The boss flips a page."
-
-    "Pauses on a photograph of a burning shop."
-
-    "They sigh. It's not empathy, it's calculation."
-
-    "\"If we run this... the Ministry will pull our ads.\""
-
-    "They look up, eyes hard."
-
-    "\"But if we don't, the foreign press will.\""
-
-    "\"Get me a confession. A real one. On tape.\""
-
-    "\"And don't use your press pass. If you get caught... well, you know how police treat people from your neighborhood.\""
-
-    $ news_company_backing = "High"
-
-    "You have the Editor's reluctant backing."
-
-    jump quest_journalist_infiltration_briefing
-
-
-label quest_journalist_office_present_fail:
-    "The boss pushes the file back."
-
-    "\"You people,\" they sigh."
-
-    "\"Always looking for wounds to salt.\""
-
-    "\"We report 'National News'. Not sectarian grievances.\""
-
-    "\"Get back to your desk.... Or clear it out.\""
-
-    "You take the file."
-
-    "Your hands are shaking. Not from fear."
-
-    "From rage."
-
-    "You know exactly why they won't run it."
-
-    "You're doing this anyway."
-
-    $ news_company_backing = "None"
-
-    jump quest_journalist_infiltration_briefing
-
-label quest_journalist_office_hint:
-    "You hesitate."
-
-    "You mention a 'corruption piece' regarding the gala."
-
-    "You leave out the riots. You leave out the blood."
-
-    "The boss waves a hand."
-
-    "\"Politics as usual? Fine. But don't waste resources.\""
-
-    "It's a half-approval."
-
-    "You have no backup, but you haven't been fired."
-
-    $ news_company_backing = "Medium"
-
-    jump quest_journalist_infiltration_briefing
-
-label quest_journalist_office_nothing:
-    "You look at the boss."
-
-    "You look at the comfortable chair, the sacred thread on their wrist, the indifference."
-
-    "\"Nothing,\" you say."
-
-    "\"Just checking the sports layout.\""
-
-    "You walk out."
-
-    "This way, they can't say no."
-
-    "But if you scream for help, no one is coming."
-
-    $ news_company_backing = "None"
-
-    jump quest_journalist_infiltration_briefing
-
-label quest_journalist_infiltration_briefing:
+    scene office quest 
+    # Placeholder background name
     with fade
 
-    "You make your way to the Gala at night."
+    "It’s another busy workday at the news office."
+    "A controlled chaos of chipped desks, flickering fluorescent lights, and clatter of repurposed typewriters."
+    "The air smells faintly of stale chai and cheap paper."
 
-    "Celebrating 'Unity Day'."
+    "You see your boss sitting behind their desk, an island of controlled order amidst the surrounding mess."
+    ""
 
-    "Held in the Minister's private compound."
+    "You clutch the dossier you’ve spent countless nights preparing."
+    "Your notes are practically spilling out."
 
-    "The people who gave the orders will be there."
+    "You remember the riots. You remember the silence that followed."
+    "And you remember a truth buried beneath layers of carefully constructed lies."
+
+    "Your boss speaks without looking up."
+    "\"You wanted to see me. Make it quick. Deadline’s breathing down my neck.\""
+    ""
+
+    # CALCULATE ODDS
+    # Friction increases difficulty because the boss values the journalist less due to caste/religion
+    $ odds_convince = 35 + (suspicion * 10) + pc.get_profile_friction()
     
-    "Drinking champagne."
-    
-    "Laughing."
+    # Going solo is safer socially (boss doesn't yell at you now) but riskier later (no cover)
+    $ odds_solo = 10 
 
-    "You stand outside the perimeter."
-    
-    "Security is tight."
-    
+    menu:
+        "How do you handle the dossier?"
+        "Present the file on the riots.":
+            jump quest_journalist_boss_confrontation
+        "Say it was nothing. Go solo.":
+            jump quest_journalist_go_solo
+
+    # call screen risk_assessment_menu_2options(
+    #     pc,
+    #     prompt="How do you handle the dossier?",
+    #     option1="Present the file on the riots.", option1tt="{}% Chance of Rejection".format(odds_convince), 
+    #     option2="Say it was nothing. Go solo.", option2tt="Safest now, riskier later."
+    # )
+    # $ chosen_approach = _return
+
+    # if chosen_approach == "Present the file on the riots.":
+    #     jump quest_journalist_boss_confrontation
+    # else:
+    #     jump quest_journalist_go_solo
 
 
+label quest_journalist_boss_confrontation:
+
+    "You place the file on the desk."
+    "\"The riots… it's been years since that,\", your boss says."
+    " \"And you want us to dredge this up now? Why?\""
+
+    menu:
+        "Frame it as a major scoop":
+            "\"This is the story everyone is afraid to write. It will put this paper on the map.\""
+            # Slight bonus for appealing to greed
+            $ odds_convince -= 10 
+        
+        "Focus on inconsistencies":
+            "\"The official reports don't match the body count. It's sloppy. We can prove it.\""
+
+    $ current_outcome = perform_roll_tom(odds_convince)
+
+    if current_outcome == "good":
+        "The boss sighs, tapping a pen against the desk."
+        "\"Alright. Fine. But do not expect the news agency to back you up if you’re caught.\""
+        ""
+        $ institutional_cover = "Some" 
+        jump quest_journalist_infiltration
+    else:
+        "The boss shoves the file back at you."
+        "\"We print news, not ghost stories. Get back to work.\""
+        "You take the file. You're doing this without them anwyays!"
+        $ institutional_cover = "None"
+        jump quest_journalist_infiltration
+
+
+label quest_journalist_go_solo:
+    
+    "You hesitate."
+    "\"Nothing,\" you say. \"Just checking the deadline.\""
+    ""
+
+    "You walk away, clutching the dossier tighter."
+    "If the paper won't sanction the investigation, you will become the investigation."
+    $ institutional_cover = "None"
+    
+    jump quest_journalist_infiltration
+
+
+label quest_journalist_infiltration:
+
+    # BEAT 2: THE APPROACH (Going Undercover)
+
+    scene art quest
+    with fade
+
+    "Weeks later."
+    "You have used your connections to slip into the Ministry's annual gala as a server."
+    ""
+
+    "The room is upside down: The people who ordered the violence are here, eating tiny cakes, laughing."
+    "While the people who suffered are serving the drinks."
+
+    "You spot a corrupt official near the balcony."
+    "They are speaking in low tones about 'cleaning up the loose ends' from the riots."
+
+    "You need that conversation recorded."
+
+    $ odds_record = 30 + (suspicion * 10) + pc.get_profile_friction()
+
+    
+
+    menu:
+        "How do you get the evidence?"
+        "Get close with a hidden mic (risky).":
+            $ current_outcome = perform_roll_tom(odds_record)
+            if current_outcome == "good":
+                jump quest_journalist_success_major
+            else:
+                jump quest_journalist_caught
+        "Lip read from a distance.":
+            jump quest_journalist_success_minor
+
+    # call screen risk_assessment_menu_2options(
+    #     pc,
+    #     prompt="How do you get the evidence?",
+    #     option1="Get close with a hidden mic.", option1tt="{}% Chance of Caught".format(odds_record), 
+    #     option2="Lip read from a distance.", option2tt="Safe, but might miss details."
+    # )
+    # $ chosen_approach = _return
+
+    # if chosen_approach == "Get close with a hidden mic.":
+    #     $ current_outcome = perform_roll_tom(odds_record)
+    #     if current_outcome == "good":
+    #         jump quest_journalist_success_major
+    #     else:
+    #         jump quest_journalist_caught
+    # else:
+    #     # Lip reading is safer but gives less impact
+    #     jump quest_journalist_success_minor
+
+
+label quest_journalist_success_major:
+    
+    "You drift closer with a tray of champagne."
+    "The official is drunk on power."
+    "\"The cover-up held,\" they say clearly. \"Religion A was never a threat, but the fear... the fear was useful.\""
+    
+    "Your recorder catches every word."
+    "You slip away into the kitchen, heart hammering."
+    
+    $ seeds_of_change += 4
+    jump quest_journalist_epilogue
+
+
+label quest_journalist_success_minor:
+
+    "You stay back in the shadows."
+    "You catch phrases: \"...never a threat...\" and \"...useful fear...\""
+    "You write it down on a napkin immediately."
+    
+    "It's not a recording, but it's a lead. It's the start of a thread you can pull."
+    
+    $ seeds_of_change += 2
+    jump quest_journalist_epilogue
+
+
+label quest_journalist_caught:
+
+    "You step too close."
+    "The official turns, eyes narrowing."
+    "\"You. I don't recognize you.\""
+
+    "Security is called."
+    "You have to dump the recording device in a flowerpot to avoid arrest."
+    
+    "You are thrown out, not arrested, but your cover is blown."
+    "You lost the evidence, but you saw their fear. You know you are right."
+
+    $ suspicion += 2
+    $ seeds_of_change += 1
+    
+    jump quest_journalist_failure_epilogue
+
+
+label quest_journalist_epilogue:
+
+    scene black
+    with fade
+
+    "The story runs on Sunday."
+    "" 
+    
+    if institutional_cover == "None":
+        "It runs on an anonymous blog, not the front page."
+        "But it spreads. Whispers turn into conversations."
+    else:
+        "It runs on the front page. The city stops to read it."
+
+    "You successfully expose the truth to the public."
+    ""
+    "Somewhere, a politician sweats. Somewhere, a survivor feels seen."
+
+    return
+
+
+label quest_journalist_failure_epilogue:
+
+    scene black
+    with fade
+
+    "You are back at your desk the next day."
+    "The dossier is still there, but now you are watched."
+    
+    "The story is suppressed."
+    ""
+    
+    "But you remember."
+    "And now, they know that someone remembers."
+
+    return

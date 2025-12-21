@@ -1,7 +1,7 @@
 label myScreens:
 
 screen mapScreen:
-    add "Map_.png"
+    add "Map_3.png"
 
     #Room1
     imagebutton:
@@ -15,10 +15,16 @@ screen mapScreen:
         focus_mask True
         idle "Map_area2_idle.png"
         hover "Map_area2.png"
+        action Jump("quest_journalist_briefing")
+
+    #Room3
+    imagebutton:
+        focus_mask True
+        idle "map_area3_idle.png"
+        hover "map_area3.png"
         action Jump("quest_artresist_briefing")
-
         
-
+        
     #Room3
     #imagebutton:
     #    if wing_strength >= 2:
