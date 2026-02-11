@@ -2,6 +2,7 @@
 label quest_artresist_briefing:
 
     call quest_enter
+    call travel_to_quest(required_papers=1)
 
 # ==============================================================================
 # BRIEFING
@@ -51,7 +52,7 @@ label quest_artresist_intro:
     "You take a breath. You\'re going to make something anyway."
 
 # ==============================================================================
-# CHOICE
+#‼️ CHOICE
 # ==============================================================================
 
     menu:
@@ -76,7 +77,7 @@ label quest_artresist_game:
     "You don\'t code much, but you know what it should *feel* like."
 
 # ==============================================================================
-# CHOICE - GAME
+#‼️ CHOICE - GAME
 # ==============================================================================
 
     menu:
@@ -98,7 +99,7 @@ label quest_artresist_drag:
     "You paint your face with campus colors, then *scramble them*."
 
 # ==============================================================================
-# CHOICE - DRAG
+#‼️ CHOICE - DRAG
 # ==============================================================================
 
     menu:
@@ -118,7 +119,7 @@ label quest_artresist_zine:
     "You fold each one by hand."
 
 # ==============================================================================
-# CHOICE - ZINE
+#‼️ CHOICE - ZINE
 # ==============================================================================
 
     menu:

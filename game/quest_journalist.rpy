@@ -2,6 +2,7 @@
 label quest_journalist_briefing:
     
     call quest_enter
+    call travel_to_quest(required_papers=1)
 
 # ==============================================================================
 # BRIEFING
@@ -77,7 +78,7 @@ label quest_journalist_office:
     #$ odds_solo = 10 
 
 # ==============================================================================
-# CHOICE
+# ‼️ CHOICE
 # ==============================================================================
 
 
@@ -102,7 +103,7 @@ label quest_journalist_office:
     #     jump quest_journalist_go_solo
 
 # ==============================================================================
-# CHOICE
+#‼️ CHOICE
 # ==============================================================================
 
 label quest_journalist_boss_confrontation:
@@ -190,7 +191,7 @@ label quest_journalist_infiltration:
 
 
 # ==============================================================================
-# CHOICE 
+#‼️ CHOICE 
 # ==============================================================================
     menu:
         "How do you get the evidence?"

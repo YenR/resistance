@@ -85,6 +85,48 @@ init python:
     def clamp(v, lo, hi):
         return max(lo, min(hi, int(v)))
 
+    STAT_BONUS = {
+        "papers":      {0: 0, 1: -3, 2: -6},
+        "language":    {0: 0, 1: -3, 2: -6},
+        "affiliation": {0: 0, 1: -3, 2: -6},
+        "savings":     {0: 0, 1: -2, 2: -4},
+    }
+
+    def has_strength(pc, keyword):
+        if not keyword:
+            return False
+        kw = keyword.lower()
+        return any(kw in s.lower() for s in pc.strengths)
+
+    def calc_choice_risk(base, suspicion, pc, spotlight=None, strength_keyword=None, suspicion_w=6, friction_w=0.5):
+        # baseline you already use everywhere
+        risk = base + suspicion * suspicion_w + int(pc.get_profile_friction() * friction_w)
+
+        notes = []
+
+        # spotlight stat bonus (reduces risk if stat is higher)
+        if spotlight:
+            val = getattr(pc, spotlight, 0)
+            bonus = STAT_BONUS.get(spotlight, {}).get(val, 0)
+            risk += bonus
+            if bonus != 0:
+                notes.append("{} helps ({}/2)".format(spotlight.capitalize(), val))
+            else:
+                notes.append("{} "Nothing to add. ({}/2)".format(spotlight.capitalize(), val))
+
+        # tiny strength nudge
+        if strength_keyword:
+            if has_strength(pc, strength_keyword):
+                risk -= 5
+                notes.append("Strength: {}".format(strength_keyword))
+            else:
+                notes.append("Nothing to add. {}".format(strength_keyword))
+
+        risk = max(5, min(90, int(risk)))
+        tooltip = "\n".join(notes)
+        return risk, tooltip
+
+
     class PlayerCharacter:
         def __init__(
             self,
@@ -126,7 +168,7 @@ init python:
         def get_profile_friction(self):
             """
             Higher friction = harder social terrain + less access.
-            Used by your risk formulas: risk = base + suspicion*X + pc.get_profile_friction()*Y
+            Used by risk formulas: risk = base + suspicion*X + pc.get_profile_friction()*Y
             """
             friction = 0
 
@@ -346,7 +388,7 @@ label start:
 
             # 🏛️ Affiliation
             {"text": "An office with your name on the door.",                 "mod": ( 0, 0, 1, 0)},
-            {"text": "No one remembers who you are meant to be.",     "mod": ( 0, 0,-1, 0)},
+            {"text": "No one remembers who you are supposed to be.",     "mod": ( 0, 0,-1, 0)},
 
             # 💰 Savings
             {"text": "Your pocket is lighter than it should be.",    "mod": ( 0, 0, 0,-1)},
@@ -391,6 +433,18 @@ label start:
 # QUEST HELPERS
 # ==============================================================================
 
+label travel_to_quest(required_papers=1):
+    # If papers too low, travel is harder / costs you something
+    if pc.papers < required_papers:
+        centered "Denied."
+        #stamp sound? 
+
+        #choose how to get in: pay a smuggler (if enough money) or based on char. strength 
+        
+    else:
+        centered "Approved."
+        #stamp sound? 
+    return
 
 label run_end:
     scene black
