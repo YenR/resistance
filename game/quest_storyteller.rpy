@@ -281,6 +281,8 @@ label quest_storyteller_library_readingroom:
 
     "You step inside."
 
+    scene library2 with fade
+
     "A normal room."
     "Tables. Books spread open."
     "Tea cooling in cups."

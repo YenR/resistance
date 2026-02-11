@@ -25,6 +25,7 @@ label map:
 
     play music "audio/HoliznaCC0-DustyAttic.mp3" volume 0.4 fadein 1.5
 
+    window hide
     call screen mapScreen
 
     $ chosen_label = _return

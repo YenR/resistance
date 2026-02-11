@@ -45,6 +45,9 @@ label quest_artresist_intro:
     "The security guard who asked for your ID. "
     "The thesis advisor who called your project 'too political.'"
 
+    scene art quest 2
+    with fade
+
     "You take a breath. You\'re going to make something anyway."
 
 # ==============================================================================

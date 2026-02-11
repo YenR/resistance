@@ -156,11 +156,13 @@ label quest_journalist_go_solo:
 
 label quest_journalist_infiltration:
 
-    scene art quest
-    with fade
+    #scene art quest
+    #with fade
 
     "Weeks later."
     "You have used your connections to slip into the Ministry's annual gala as a server."
+
+    scene office quest 2 with fade
 
 
     "The room is upside down: The people who ordered the violence are here, eating tiny cakes, laughing."
