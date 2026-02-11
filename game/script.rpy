@@ -112,7 +112,7 @@ init python:
             if bonus != 0:
                 notes.append("{} helps ({}/2)".format(spotlight.capitalize(), val))
             else:
-                notes.append("{} "Nothing to add. ({}/2)".format(spotlight.capitalize(), val))
+                notes.append("{} Nothing to add. ({}/2)".format(spotlight.capitalize(), val))
 
         # tiny strength nudge
         if strength_keyword:
