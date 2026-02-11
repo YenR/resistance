@@ -23,6 +23,8 @@ label map:
     scene black
     with fade
 
+    play music "audio/HoliznaCC0-DustyAttic.mp3" volume 0.4 fadein 1.5
+
     call screen mapScreen
 
     $ chosen_label = _return
@@ -65,6 +67,7 @@ screen mapScreen:
         focus_mask True
         idle "Map_area1_idle.png"
         hover "Map_area1.png"
+        hovered Function(play_random_blip)
         #action Jump("quest_storyteller_briefing")
         #action Jump(QUESTS["storyteller"]["label"])
         #action [Hide("mapScreen"), Call(QUESTS["storyteller"]["label"])]
@@ -76,6 +79,7 @@ screen mapScreen:
         focus_mask True
         idle "Map_area2_idle.png"
         hover "Map_area2.png"
+        hovered Function(play_random_blip)
         #action Jump("quest_journalist_briefing")
         #action Jump(QUESTS["journalist"]["label"])
         #action [Hide("mapScreen"), Call(QUESTS["journalist"]["label"])]
@@ -89,6 +93,7 @@ screen mapScreen:
         focus_mask True
         idle "map_area3_idle.png"
         hover "map_area3.png"
+        hovered Function(play_random_blip)
         #action Jump("quest_artresist_briefing")
         #action Jump(QUESTS["artist"]["label"])
         #action [Hide("mapScreen"), Call(QUESTS["artist"]["label"])]

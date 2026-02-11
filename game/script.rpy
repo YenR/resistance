@@ -66,6 +66,19 @@ init python:
     #random = renpy.random
     #import time
 
+    def play_random_blip():
+        # List your files here. 
+        # If they are in the 'audio' folder, use "audio/filename.wav"
+        blip_sounds = [
+            "blipSelect1.wav", 
+            "blipSelect2.wav", 
+            "blipSelect3.wav", 
+            "blipSelect4.wav"
+        ]
+        
+        # Pick a random sound and play it on the 'sound' channel
+        renpy.sound.play(renpy.random.choice(blip_sounds), relative_volume=0.1)
+
     def clamp(v, lo, hi):
         return max(lo, min(hi, int(v)))
 

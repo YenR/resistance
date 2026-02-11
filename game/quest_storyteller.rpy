@@ -35,7 +35,7 @@ label quest_storyteller_briefing:
 # ==============================================================================
 
 
-    play music "audio/HoliznaCC0-Ukraine.mp3"
+    play music "audio/HoliznaCC0-Ukraine.mp3" volume 0.8
 
     $ quest_card_img = "images/Quest2_page.png"
     call show_quest_card
@@ -201,6 +201,8 @@ label quest_storyteller_library_aisles:
 
     "You pull it out."
 
+    play sound "creak_open_01.wav" 
+
     "The binding creaks like it hasn’t been opened in years."
 
     "Inside: handwritten pages. Loose. Some torn."
@@ -277,7 +279,10 @@ label quest_storyteller_library_mouthbox_success:
 label quest_storyteller_library_readingroom:
 
     "You arrive in front of a door."
+
     "You knock twice."
+
+    play sound "nice-simple-knock-on-door.wav" 
 
     "Tap. Tap."
 
@@ -486,6 +491,8 @@ label quest_storyteller_readingroom_write_loop:
     $ pages_written += 1
     $ seeds_of_change += 2
     $ suspicion += 1
+
+    play sound "writing-signature-1.wav" volume 0.8
 
     if pages_written == 1:
         "A neighbour’s story."

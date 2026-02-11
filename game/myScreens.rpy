@@ -350,6 +350,8 @@ screen character_select(char_candidates):
                     hover_background "#333"
                     padding (20, 20)
 
+                    hovered Function(play_random_blip)
+
                     action [SetVariable("pc", char), Pause(0.08), Return()]
 
                     vbox:

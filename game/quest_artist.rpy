@@ -18,7 +18,7 @@ label quest_artresist_briefing:
     "Some questions always went unanswered."
     "Some truths are called 'aggressive', or 'divisive'."
 
-    play music "audio/HoliznaCC0-Ukraine.mp3"
+    play music "audio/HoliznaCC0-DownInTheBasement.mp3"
 
     $ quest_card_img = "images/Quest_page_Art.png"
     call show_quest_card

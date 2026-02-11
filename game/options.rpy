@@ -31,16 +31,22 @@ define config.version = "1.0"
 
 define gui.about = _p("""
 Art: Tina
-
 Development: Shivi, Tom, Kseniia 
-
 Writing: Shivi, Kseniia
 
-Music: Holiznacc0 (Free Music Archive).
-https://freemusicarchive.org/music/holiznacc0/scores/ukraine/
+Music: by Holiznacc0 (Free Music Archive).
+https://freemusicarchive.org/music/holiznacc0/
 
 Font: “Beachman Script” (1001Fonts).
 https://www.1001fonts.com/beachman-script-font.html
+
+SFX:
+
+Door_Wood_Open_01.wav by www.bonson.ca -- https://freesound.org/s/12652/ -- License: Attribution 3.0
+
+Nice, simple knock on door by ndhfilms -- https://freesound.org/s/243786/ -- License: Creative Commons 0
+
+01322 writing signature 1.wav by Robinhood76 -- https://freesound.org/s/82498/ -- License: Attribution NonCommercial 4.0
 
 """)
 
