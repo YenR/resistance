@@ -31,13 +31,11 @@ define config.version = "1.0"
 
 define gui.about = _p("""
 Art: Tina
-
 Development: Shivi, Tom, Kseniia 
-
 Writing: Shivi, Kseniia
 
-Music: Holiznacc0 (Free Music Archive).
-https://freemusicarchive.org/music/holiznacc0/scores/ukraine/
+Music: by Holiznacc0 (Free Music Archive).
+https://freemusicarchive.org/music/holiznacc0/
 
 Font: “Beachman Script” (1001Fonts).
 https://www.1001fonts.com/beachman-script-font.html

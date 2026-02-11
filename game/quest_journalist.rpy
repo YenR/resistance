@@ -23,7 +23,7 @@ label quest_journalist_briefing:
     
     "Soon enough, it began to sound like the truth they knew was all there ever was."
 
-    play music "audio/HoliznaCC0-Ukraine.mp3"
+    play music "audio/HoliznaCC0-Anxiety.mp3"
 
     $ quest_card_img = "images/Quest_page_Shadow.png"
     call show_quest_card
