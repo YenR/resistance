@@ -162,17 +162,17 @@ screen char_stats():
 
                     vbox:
                         xsize 400
-                        add pc.portrait size (360, 200)
-                        null height 25
-
-                        text "Archetype: [pc.archetype]" color "#222"
+                        add pc.portrait size (560, 400)
                         null height 10
 
+                        # text "[pc.codename]" color "#222"
+                        # null height 10
+
                         $ friction = pc.get_profile_friction()
-                        frame:
-                            background "#330000"
-                            padding (10, 10)
-                            text "Systemic Friction: +[friction]" color "#ff6666" size 28
+                        # frame:
+                        #     background "#330000"
+                        #     padding (10, 10)
+                        #     text "Systemic Friction: +[friction]" color "#ff6666" size 28
 
                     vbox:
                         xsize 450
@@ -182,7 +182,6 @@ screen char_stats():
                         text "🗣️ Language: [pc.language]/2" color "#222"
                         text "🏛️ Affiliation: [pc.affiliation]/2" color "#222"
                         text "💰 Savings: [pc.savings]/2" color "#222"
-                        text "👁️ Visibility: [pc.visibility]/100" color "#222"
 
                         null height 15
                         label "{size=24}Strengths{/size}" text_color "#333"
@@ -257,16 +256,31 @@ screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, op
                 
     # THE TOOLTIP DISPLAY AREA
     # This box displays the text defined in the button's "tooltip" property
+    # $ tooltip = GetTooltip()
+    # if tooltip:
+    #     frame:
+    #         xalign 0.9
+    #         yalign 0.5
+    #         xmaximum 300
+    #         padding (20, 20)
+    #         background "#000000cc"
+    #         text "[tooltip]" color "#fff" size 22
+        
+
+
     $ tooltip = GetTooltip()
     if tooltip:
         frame:
-            xalign 0.9
-            yalign 0.5
-            xmaximum 300
-            padding (20, 20)
-            background "#000000cc"
-            text "[tooltip]" color "#fff" size 22
+            xpos 0.78
+            ypos 0.35
+            xmaximum 360
+            padding (25, 25)
+            background "#000000dd"
 
+            vbox:
+                spacing 10
+                text "Risk Analysis" size 20 bold True color "#aaa"
+                text "[tooltip]" color "#fff" size 20
 
 # ==============================================================================================================
 # STATS BUTTON
@@ -279,8 +293,7 @@ screen stats_button_overlay():
         align (0.98, 0.02) 
         
         textbutton "STATS":
-            # 1. The Magic Line:
-            # The button works ONLY if 'pc' exists. Otherwise, it's disabled.
+
             sensitive (pc is not None)
             
             action Show("char_stats")

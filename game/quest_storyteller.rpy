@@ -1,6 +1,8 @@
 label quest_storyteller_briefing:
     
     call quest_enter
+    call travel_to_quest(required_papers=1)
+
 
 # ==============================================================================
 # BRIEFING
@@ -55,8 +57,8 @@ label quest_storyteller_briefing:
         "You get dressed and decide to go to…"
         "The Library:\nYou heard of an underground operation running in this town through a library, you’re not sure if the information is secure or a trap setup by the Storyteller":
             jump quest_storyteller_library_1
-        "The Supermarket:\nYou want to talk to the locals here and see if they really do believe the Storyteller" if False:
-            jump quest_storyteller_supermarket_1 
+        #"The Supermarket:\nYou want to talk to the locals here and see if they really do believe the Storyteller" if False:
+            #jump quest_storyteller_supermarket_1 
 
 
 
@@ -87,19 +89,27 @@ label quest_storyteller_library_1:
     "Behind the desk, a librarian looks up."
 
 # ==============================================================================
-# CHOICE 1: LIBRARY
+# ‼️ CHOICE 1: LIBRARY
 # ==============================================================================
 
     #window hide
     #$ risk = 25 + (suspicion * 10) + pc.get_profile_friction()
-    $ risk_mouthbox = 25 + suspicion * 6 + int(pc.get_profile_friction() * 0.5)
-    $ risk_mouthbox = max(5, min(90, risk_mouthbox))
+    #$ risk_mouthbox = 25 + suspicion * 6 + int(pc.get_profile_friction() * 0.5)
+    #$ risk_mouthbox = max(5, min(90, risk_mouthbox))
+
+    $ risk_mouthbox, tip_mouthbox = calc_choice_risk(
+        base=25,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language",
+        strength_keyword="Communication"
+    )
 
     call screen risk_assessment_menu_2options(
         pc,
         prompt="How do you approach?",
         option1="Ask for Local History", option1tt="0% Chance of Failure", 
-        option2="Mention the Mouth-Box", option2tt="{}% Chance of Failure".format(risk_mouthbox)
+        option2="Mention the Mouth-Box", option2tt="{}% Chance of Failure\n{}".format(risk_mouthbox, tip_mouthbox)
     )
     $ chosen_approach = _return
 
@@ -208,7 +218,7 @@ label quest_storyteller_library_aisles:
     "No one is watching."
 
 # ==============================================================================
-# CHOICE: LIBRARY - BOOK
+# ‼️ CHOICE: LIBRARY - BOOK
 # ==============================================================================
 
     menu:
@@ -309,7 +319,7 @@ label quest_storyteller_library_readingroom:
     "\"What brings you to a room like this?\""
 
 # ==============================================================================
-# READING ROOM CHOICE 1
+# ‼️ READING ROOM CHOICE 1
 # ==============================================================================
 
     menu:
@@ -372,7 +382,7 @@ label quest_storyteller_readingroom_test:
     $ risk_rumor = max(5, min(90, risk_rumor))
 
 # ==============================================================================
-# READING ROOM CHOICE 2
+# ‼️ READING ROOM CHOICE 2
 # ==============================================================================
 
     call screen risk_assessment_menu_2options(
@@ -412,7 +422,7 @@ label quest_storyteller_readingroom_test:
         "\"Are you ready to speak your own voice? Or are you just borrowing ours?\""
 
 # ==============================================================================
-# READING ROOM: POTENTIAL CHOICE - OPEN UP?  
+# ‼️ READING ROOM: POTENTIAL CHOICE - OPEN UP?  
 # ==============================================================================
 
         menu:
