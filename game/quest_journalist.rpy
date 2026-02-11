@@ -1,14 +1,12 @@
+
 label quest_journalist_briefing:
     
-    # 1. SETUP & ATMOSPHERE
-    stop music fadeout 2.0
-    scene black
-    with fade
+    call quest_enter
 
-    #default suspicion = 0
-    #default seeds_of_change = 0
+# ==============================================================================
+# BRIEFING
+# ==============================================================================
 
-    # 2. THE "ONCE UPON A TIME" INTRO (Theme requirement)
     "Once upon a time, there was a nation."
     " It spoke of unity. It spoke of progress."
     " It never seemed to address the shadows."
@@ -24,30 +22,24 @@ label quest_journalist_briefing:
     " Then they stopped sharing their own experiences."
     
     "Soon enough, it began to sound like the truth they knew was all there ever was."
-    ""
 
-    # 3. TITLE CARD
-    window hide
-    scene black
-    # Placeholder for a title image, similar to quest_mini.rpy
-    show expression "images/Quest_page_Shadow.png" as title_img at truecenter
-    with Dissolve(3.0)
-    pause
-    hide title_img
-    with Dissolve(1.0)
-    window show
+    play music "audio/HoliznaCC0-Ukraine.mp3"
 
-    "Please select who is going to resist the narrative."
+    $ quest_card_img = "images/Quest_page_Shadow.png"
+    call show_quest_card
+
+    # "Please select who is going to resist the narrative."
     # Assuming character_select is a global call defined elsewhere
-    call character_select
+    # call character_select
 
     jump quest_journalist_office
 
+# ==============================================================================
+# PART 1: Talking to the Boss
+# ==============================================================================
 
 label quest_journalist_office:
 
-    # BEAT 1: THE BRIEFING (The Boss)
-    
     scene office quest 
     # Placeholder background name
     with fade
@@ -57,7 +49,7 @@ label quest_journalist_office:
     "The air smells faintly of stale chai and cheap paper."
 
     "You see your boss sitting behind their desk, an island of controlled order amidst the surrounding mess."
-    ""
+
 
     "You clutch the dossier you’ve spent countless nights preparing."
     "Your notes are practically spilling out."
@@ -67,14 +59,27 @@ label quest_journalist_office:
 
     "Your boss speaks without looking up."
     "\"You wanted to see me. Make it quick. Deadline’s breathing down my neck.\""
-    ""
 
-    # CALCULATE ODDS
+# ==============================================================================
+# CALCULATE RISK
+# ==============================================================================
+
+    # FAIL CHANCE (0–100): higher = more likely to fail
+
     # Friction increases difficulty because the boss values the journalist less due to caste/religion
-    $ odds_convince = 35 + (suspicion * 10) + pc.get_profile_friction()
+    #$ odds_convince = 35 + (suspicion * 10) + pc.get_profile_friction()
+
+    $ risk_convince = 20 + suspicion * 5 + int(pc.get_profile_friction() * 0.4)
+    $ risk_convince = min(85, risk_convince)
     
     # Going solo is safer socially (boss doesn't yell at you now) but riskier later (no cover)
-    $ odds_solo = 10 
+    #Not used? 
+    #$ odds_solo = 10 
+
+# ==============================================================================
+# CHOICE
+# ==============================================================================
+
 
     menu:
         "How do you handle the dossier?"
@@ -96,6 +101,9 @@ label quest_journalist_office:
     # else:
     #     jump quest_journalist_go_solo
 
+# ==============================================================================
+# CHOICE
+# ==============================================================================
 
 label quest_journalist_boss_confrontation:
 
@@ -107,12 +115,13 @@ label quest_journalist_boss_confrontation:
         "Frame it as a major scoop":
             "\"This is the story everyone is afraid to write. It will put this paper on the map.\""
             # Slight bonus for appealing to greed
-            $ odds_convince -= 10 
+            $ risk_convince -= 10 
         
         "Focus on inconsistencies":
             "\"The official reports don't match the body count. It's sloppy. We can prove it.\""
 
-    $ current_outcome = perform_roll_tom(odds_convince)
+    $ risk_convince = max(5, min(85, risk_convince))
+    $ current_outcome = perform_roll(risk_convince)
 
     if current_outcome == "good":
         "The boss sighs, tapping a pen against the desk."
@@ -132,7 +141,7 @@ label quest_journalist_go_solo:
     
     "You hesitate."
     "\"Nothing,\" you say. \"Just checking the deadline.\""
-    ""
+
 
     "You walk away, clutching the dossier tighter."
     "If the paper won't sanction the investigation, you will become the investigation."
@@ -140,17 +149,19 @@ label quest_journalist_go_solo:
     
     jump quest_journalist_infiltration
 
+# ==============================================================================
+# PART 2: Going Undercover
+# ==============================================================================
+
 
 label quest_journalist_infiltration:
-
-    # BEAT 2: THE APPROACH (Going Undercover)
 
     scene art quest
     with fade
 
     "Weeks later."
     "You have used your connections to slip into the Ministry's annual gala as a server."
-    ""
+
 
     "The room is upside down: The people who ordered the violence are here, eating tiny cakes, laughing."
     "While the people who suffered are serving the drinks."
@@ -160,14 +171,29 @@ label quest_journalist_infiltration:
 
     "You need that conversation recorded."
 
-    $ odds_record = 30 + (suspicion * 10) + pc.get_profile_friction()
+# ==============================================================================
+# CALCULATE RISK 
+# ==============================================================================
 
-    
+    #$ risk_record = 30 + (suspicion * 10) + pc.get_profile_friction()
+    $ risk_record = 30 + suspicion * 6 + int(pc.get_profile_friction() * 0.5)
 
+
+    if institutional_cover == "Some":
+        $ risk_record -= 10  # news agency protection
+    else:
+        $ risk_record += 10  # no backup, higher risk
+
+    $ risk_record = max(5, min(90, risk_record))
+
+
+# ==============================================================================
+# CHOICE 
+# ==============================================================================
     menu:
         "How do you get the evidence?"
         "Get close with a hidden mic (risky).":
-            $ current_outcome = perform_roll_tom(odds_record)
+            $ current_outcome = perform_roll(risk_record)
             if current_outcome == "good":
                 jump quest_journalist_success_major
             else:
@@ -194,6 +220,10 @@ label quest_journalist_infiltration:
     #     jump quest_journalist_success_minor
 
 
+# ==============================================================================
+# BIG SUCCESS
+# ==============================================================================
+
 label quest_journalist_success_major:
     
     "You drift closer with a tray of champagne."
@@ -206,7 +236,9 @@ label quest_journalist_success_major:
     $ seeds_of_change += 4
     jump quest_journalist_epilogue
 
-
+# ==============================================================================
+# MODERATE SUCCESS
+# ==============================================================================
 label quest_journalist_success_minor:
 
     "You stay back in the shadows."
@@ -219,6 +251,9 @@ label quest_journalist_success_minor:
     jump quest_journalist_epilogue
 
 
+# ==============================================================================
+# FAIL
+# ==============================================================================
 label quest_journalist_caught:
 
     "You step too close."
@@ -236,6 +271,9 @@ label quest_journalist_caught:
     
     jump quest_journalist_failure_epilogue
 
+# ==============================================================================
+# EPILOGUE(S)
+# ==============================================================================
 
 label quest_journalist_epilogue:
 
@@ -243,8 +281,7 @@ label quest_journalist_epilogue:
     with fade
 
     "The story runs on Sunday."
-    "" 
-    
+
     if institutional_cover == "None":
         "It runs on an anonymous blog, not the front page."
         "But it spreads. Whispers turn into conversations."
@@ -252,10 +289,11 @@ label quest_journalist_epilogue:
         "It runs on the front page. The city stops to read it."
 
     "You successfully expose the truth to the public."
-    ""
+
     "Somewhere, a politician sweats. Somewhere, a survivor feels seen."
 
-    return
+    #return
+    jump quest_exit_cover_up
 
 
 label quest_journalist_failure_epilogue:
@@ -267,9 +305,16 @@ label quest_journalist_failure_epilogue:
     "The dossier is still there, but now you are watched."
     
     "The story is suppressed."
-    ""
+
     
     "But you remember."
     "And now, they know that someone remembers."
 
+    #return
+    jump quest_exit_cover_up
+
+
+label quest_exit_cover_up(title="Quest Complete", body="", failed=False):
+    call end_quest
+    call screen quest_summary(title=title, body=body)
     return

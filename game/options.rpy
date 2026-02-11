@@ -32,7 +32,7 @@ define config.version = "1.0"
 define gui.about = _p("""
 Art: Tina
 
-Development: Shivi, Tom
+Development: Shivi, Tom, Kseniia 
 
 Writing: Shivi, Kseniia
 
