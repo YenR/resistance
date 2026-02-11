@@ -299,6 +299,23 @@ init python:
         n = int(n)
         return "+{}".format(n) if n > 0 else str(n)
 
+    def typewriter_sfx_callback(event, **kwargs):
+        typewriter_sound_prefix = "audio/typewriter_sfx/typewriter_0"
+        typewriter_sound_suffix = ".ogg"
+
+        # event "show" is called whenever a new character appears on screen
+        if event == "show":
+            # lets pick a random sound between the six options we have
+            sound_num = random.randint(1,6)
+
+            sound_file = typewriter_sound_prefix + str(sound_num) + typewriter_sound_suffix
+
+            renpy.sound.play(sound_file)
+        elif event == "end":
+            renpy.sound.stop()
+    
+
+
 # ROLL FUNC IF WE WANT TO CHOOSE RESISTANCE MODE APPROACH AND HAVE IT AFFECT THE OUTCOME 
 
     # def perform_roll1(pc, approach_type):
@@ -422,8 +439,10 @@ label start:
     
     call character_select 
 
+    define narrator_with_typewriter = Character(None, kind=centered, callback=typewriter_sfx_callback)
+
     with Dissolve(0.2)
-    centered "Welcome to the resistance."
+    narrator_with_typewriter "{font=fonts/CourierPrime-Regular.ttf}{size=+20}W{w=0.2}e{w=0.2}l{w=0.2}c{w=0.2}o{w=0.2}m{w=0.2}e {w=0.2}t{w=0.2}o {w=0.2}T{w=0.2}h{w=0.2}e {w=0.2}R{w=0.2}e{w=0.2}s{w=0.2}i{w=0.2}s{w=0.2}t{w=0.2}a{w=0.2}n{w=0.2}c{w=0.2}e{w=0.2}.{/size}{/font}"
 
 
 
