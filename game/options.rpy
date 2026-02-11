@@ -170,6 +170,8 @@ define config.save_directory = "resistance-1766162106"
 
 define config.window_icon = "gui/window_icon.png"
 
+define config.rollback_enabled = False
+
 
 ## Build configuration #########################################################
 ##
