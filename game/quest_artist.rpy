@@ -76,22 +76,63 @@ label quest_artresist_game:
     "You stay up late sketching out scenes."
     "You don\'t code much, but you know what it should *feel* like."
 
+
+
 # ==============================================================================
 #‼️ CHOICE - GAME
 # ==============================================================================
 
-    menu:
-        "How do you launch the game?"
-        "Post it on the university Discord":
-            "It spreads fast. And someone flags it."
+    $ risk_distribution, tip_distribution = calc_choice_risk(
+        base=30,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language", 
+        strength_keyword="Art & storytelling" #Shivi: for the game I think Art & storytelling fits best
+        )
+    
 
-        "Put it on a USB and hand it out anonymously":
-            "Old school. Low traceability. Slower spread."
+    
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="How do you launch the game?",
 
-        "Upload it to a public platform under a fake name":
-            "You can\'t resist putting your art out in the open."
+        option1="Post it on the university Discord",
+        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+
+        option2="Put it on a USB and hand it out anonymously",
+        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+
+        option3="Upload it to a public platform under a fake name",
+        option3tt="{}% Chance of Failure\n{}".format(risk_distribution - 10, tip_distribution)
+    )
+    
+    $ chosen_approach = _return
+
+    if chosen_approach == "Post it on the university Discord":
+        $ risk_distribution += 10
+        "It spreads fast. And someone flags it."
+
+    elif chosen_approach == "Put it on a USB and hand it out anonymously":
+        "Old school. Low traceability. Slower spread."
+
+    else:
+        $ risk_distribution -= 10
+        "You can\'t resist putting your art out in the open."
 
     jump artresist_resolve
+
+    # menu:
+    #     "How do you launch the game?"
+    #     "Post it on the university Discord":
+    #         "It spreads fast. And someone flags it."
+
+    #     "Put it on a USB and hand it out anonymously":
+    #         "Old school. Low traceability. Slower spread."
+
+    #     "Upload it to a public platform under a fake name":
+    #         "You can\'t resist putting your art out in the open."
+
+    # jump artresist_resolve
 
 
 label quest_artresist_drag:
@@ -102,13 +143,41 @@ label quest_artresist_drag:
 #‼️ CHOICE - DRAG
 # ==============================================================================
 
-    menu:
-        "What\'s your opening number?"
-        "Lip sync to a rewritten diversity commercial":
-            "Can I get an amen?"
+    $ risk_distribution, tip_distribution = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="", 
+        strength_keyword="Charisma" #Shivi: for drag I think public speaking or charisma fits best
+        )
 
-        "Spoken word poem in full drag":
-            "No metaphors. Just stilettos."
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="What\'s your opening number?",
+
+        option1="Lip sync to a rewritten diversity commercial",
+        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+
+        option2="Spoken word poem in full drag",
+        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+    )
+
+    # menu:
+    #     "What\'s your opening number?"
+    #     "Lip sync to a rewritten diversity commercial":
+    #         "Can I get an amen?"
+
+    #     "Spoken word poem in full drag":
+    #         "No metaphors. Just stilettos."
+
+    $ chosen_approach = _return
+
+    if chosen_approach == "Lip sync to a rewritten diversity commercial":
+        $ risk_distribution += 10
+        "Can I get an amen?"
+
+    else:
+        "No metaphors. Just stilettos."
 
     jump artresist_resolve
 
@@ -122,25 +191,55 @@ label quest_artresist_zine:
 #‼️ CHOICE - ZINE
 # ==============================================================================
 
-    menu:
-        "How do you distribute it?"
-        "Leave copies in admin mailboxes":
-            "Direct action. Sharp risk."
-        "Slide it under dorm doors at night":
-            "It feels like ghost work. But someone will read it."
+    $ risk_distribution, tip_distribution = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="savings", 
+        strength_keyword="Communication" #Shivi: for Zine I think journalism or communication would help
+        )
+
+    call screen risk_assessment_menu_2options(
+        pc,
+        prompt="How do you distribute it?",
+
+        option1="Leave copies in admin mailboxes",
+        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+
+        option2="Slide it under dorm doors at night",
+        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+    )
+
+    $ chosen_approach = _return
+
+    if chosen_approach == "Leave copies in admin mailboxes":
+        $ risk_distribution += 10
+        "Direct action. Sharp risk."
+    else:
+        "It feels like ghost work. But someone will read it."
+
+    # menu:
+    #     "How do you distribute it?"
+    #     "Leave copies in admin mailboxes":
+    #         "Direct action. Sharp risk."
+    #     "Slide it under dorm doors at night":
+    #         "It feels like ghost work. But someone will read it."
 
     jump artresist_resolve
+
+
 
 
 # ==============================================================================
 # ROLL THE DICE 
 # ==============================================================================
 
-label artresist_resolve:
-    $ risk = 20 + (suspicion * 5) + int(pc.get_profile_friction() * 0.5)
-    $ risk = min(90, risk)
 
-    $ current_outcome = perform_roll(risk)
+label artresist_resolve:
+    # $ risk = 20 + (suspicion * 5) + int(pc.get_profile_friction() * 0.5)
+    # $ risk = min(90, risk)
+
+    $ current_outcome = perform_roll(risk_distribution)
 
     if current_outcome == "good":
         jump quest_artresist_success
@@ -171,7 +270,18 @@ label quest_artresist_failure:
 
     "But later, someone finds you."
 
-    "\"I read it. I saw it. I needed it.\""
+    # Shivi: changing the next line based on the medium the player chose
+    # I'm adding two new lines for game and drag
+
+    if art_resist_format == "game":
+        "\"I played it. I saw it. I needed it.\""
+        
+    elif art_resist_format == "drag":
+        "\"I saw it. I felt it. I needed it.\""
+        
+    else:
+        #Shivi: this was the default before
+        "\"I read it. I saw it. I needed it.\""
 
     $ seeds_of_change += 1
 
