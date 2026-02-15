@@ -32,13 +32,16 @@ define config.version = "1.0"
 define gui.about = _p("""
 Art: Tina
 Development: Shivi, Tom, Kseniia 
-Writing: Shivi, Kseniia
+Writing: Shivi, Kseniia, Tina
 
 Music: by Holiznacc0 (Free Music Archive).
 https://freemusicarchive.org/music/holiznacc0/
 
-Font: “Beachman Script” (1001Fonts).
-https://www.1001fonts.com/beachman-script-font.html
+Fonts: 
+
+“Beachman Script” (1001Fonts). https://www.1001fonts.com/beachman-script-font.html
+
+"Courier Prime" (Google Fonts). https://fonts.google.com/specimen/Courier+Prime
 
 SFX:
 
@@ -47,6 +50,18 @@ Door_Wood_Open_01.wav by www.bonson.ca -- https://freesound.org/s/12652/ -- Lice
 Nice, simple knock on door by ndhfilms -- https://freesound.org/s/243786/ -- License: Creative Commons 0
 
 01322 writing signature 1.wav by Robinhood76 -- https://freesound.org/s/82498/ -- License: Attribution NonCommercial 4.0
+
+Typewriter Key Press 01 by BryanSaraiva -- https://freesound.org/s/820348/ -- License: Attribution 4.0
+
+Typewriter Key Press 02 by BryanSaraiva -- https://freesound.org/s/820349/ -- License: Attribution 4.0
+
+Typewriter Key Press 03 by BryanSaraiva -- https://freesound.org/s/820350/ -- License: Attribution 4.0
+
+Typewriter Key Press 04 by BryanSaraiva -- https://freesound.org/s/820351/ -- License: Attribution 4.0
+
+Typewriter Key Press 05 by BryanSaraiva -- https://freesound.org/s/820352/ -- License: Attribution 4.0
+
+Typewriter Key Press 06 by BryanSaraiva -- https://freesound.org/s/820353/ -- License: Attribution 4.0
 
 """)
 
