@@ -88,14 +88,37 @@ label quest_artresist_game:
 #‼️ CHOICE - GAME
 # ==============================================================================
 
-    $ risk_distribution, tip_distribution = calc_choice_risk(
-        base=30,
+    
+    $ risk_dc, tip_dc = calc_choice_risk(
+        base=20,
         suspicion=suspicion,
         pc=pc,
-        spotlight="language", 
-        strength_keyword="Art & storytelling" #Shivi: for the game I think Art & storytelling fits best
-        )
+        spotlight="affiliation",
+        strength_keyword="Art & storytelling",
+        suspicion_w = 6,
+        friction_w = 0.7
+    )
+
     
+    $ risk_usb, tip_usb = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language",
+        strength_keyword="Communication",
+        suspicion_w = 5,
+        friction_w = 0.6
+    )
+    
+    $ risk_fake, tip_fake = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language",
+        strength_keyword="Tech access",
+        suspicion_w = 7,
+        friction_w = 0.5
+    )
 
     
     call screen risk_assessment_menu_2options(
@@ -103,26 +126,27 @@ label quest_artresist_game:
         prompt="How do you launch the game?",
 
         option1="Post it on the university Discord",
-        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+        option1tt="{}% Chance of Failure\n{}".format(risk_dc, tip_dc),
 
         option2="Put it on a USB and hand it out anonymously",
-        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+        option2tt="{}% Chance of Failure\n{}".format(risk_usb, tip_usb),
 
         option3="Upload it to a public platform under a fake name",
-        option3tt="{}% Chance of Failure\n{}".format(risk_distribution - 10, tip_distribution)
+        option3tt="{}% Chance of Failure\n{}".format(risk_fake, tip_fake)
     )
     
     $ chosen_approach = _return
 
     if chosen_approach == "Post it on the university Discord":
-        $ risk_distribution += 10
+        $ risk_distribution = risk_dc
         "It spreads fast. And someone flags it."
 
     elif chosen_approach == "Put it on a USB and hand it out anonymously":
+        $ risk_distribution = risk_usb
         "Old school. Low traceability. Slower spread."
 
     else:
-        $ risk_distribution -= 10
+        $ risk_distribution = risk_fake
         "You can\'t resist putting your art out in the open."
 
     jump artresist_resolve
@@ -149,23 +173,37 @@ label quest_artresist_drag:
 #‼️ CHOICE - DRAG
 # ==============================================================================
 
-    $ risk_distribution, tip_distribution = calc_choice_risk(
+
+    $ risk_lipsync, tip_lipsync = calc_choice_risk(
         base=20,
         suspicion=suspicion,
         pc=pc,
-        spotlight="", 
-        strength_keyword="Charisma" #Shivi: for drag I think public speaking or charisma fits best
-        )
+        spotlight="savings",
+        strength_keyword="Charisma",
+        suspicion_w = 5,
+        friction_w = 0.6
+    )
+
+    $ risk_spoken, tip_spoken = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language",
+        strength_keyword="Public speaking",
+        suspicion_w = 6,
+        friction_w = 0.4
+    )
+    
 
     call screen risk_assessment_menu_2options(
         pc,
         prompt="What\'s your opening number?",
 
         option1="Lip sync to a rewritten diversity commercial",
-        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+        option1tt="{}% Chance of Failure\n{}".format(risk_lipsync, tip_lipsync),
 
         option2="Spoken word poem in full drag",
-        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+        option2tt="{}% Chance of Failure\n{}".format(risk_spoken, tip_spoken),
     )
 
     # menu:
@@ -179,10 +217,11 @@ label quest_artresist_drag:
     $ chosen_approach = _return
 
     if chosen_approach == "Lip sync to a rewritten diversity commercial":
-        $ risk_distribution += 10
+        $ risk_distribution = risk_lipsync
         "Can I get an amen?"
 
     else:
+        $ risk_distribution = risk_spoken
         "No metaphors. Just stilettos."
 
     jump artresist_resolve
@@ -197,31 +236,44 @@ label quest_artresist_zine:
 #‼️ CHOICE - ZINE
 # ==============================================================================
 
-    $ risk_distribution, tip_distribution = calc_choice_risk(
+    $ risk_admin, tip_admin = calc_choice_risk(
+        base=22,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="affiliation",
+        strength_keyword="Art & storytelling",
+        suspicion_w = 7,
+        friction_w = 0.3
+    )
+
+    $ risk_dorms, tip_dorms = calc_choice_risk(
         base=20,
         suspicion=suspicion,
         pc=pc,
-        spotlight="savings", 
-        strength_keyword="Communication" #Shivi: for Zine I think journalism or communication would help
-        )
+        spotlight="savings",
+        strength_keyword="Communication",
+        suspicion_w = 5,
+        friction_w = 0.5
+    )
 
     call screen risk_assessment_menu_2options(
         pc,
         prompt="How do you distribute it?",
 
         option1="Leave copies in admin mailboxes",
-        option1tt="{}% Chance of Failure\n{}".format(risk_distribution + 10, tip_distribution),
+        option1tt="{}% Chance of Failure\n{}".format(risk_admin, tip_admin),
 
         option2="Slide it under dorm doors at night",
-        option2tt="{}% Chance of Failure\n{}".format(risk_distribution, tip_distribution),
+        option2tt="{}% Chance of Failure\n{}".format(risk_dorms, tip_dorms),
     )
 
     $ chosen_approach = _return
 
     if chosen_approach == "Leave copies in admin mailboxes":
-        $ risk_distribution += 10
+        $ risk_distribution = risk_admin
         "Direct action. Sharp risk."
     else:
+        $ risk_distribution = risk_dorms
         "It feels like ghost work. But someone will read it."
 
     # menu:
