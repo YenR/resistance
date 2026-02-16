@@ -51,6 +51,8 @@ Nice, simple knock on door by ndhfilms -- https://freesound.org/s/243786/ -- Lic
 
 01322 writing signature 1.wav by Robinhood76 -- https://freesound.org/s/82498/ -- License: Attribution NonCommercial 4.0
 
+Stamp by kermite607 -- https://freesound.org/s/362622/ -- License: Creative Commons 0
+
 Typewriter Key Press 01 by BryanSaraiva -- https://freesound.org/s/820348/ -- License: Attribution 4.0
 
 Typewriter Key Press 02 by BryanSaraiva -- https://freesound.org/s/820349/ -- License: Attribution 4.0

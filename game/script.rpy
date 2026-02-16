@@ -456,14 +456,97 @@ label start:
 label travel_to_quest(required_papers=1):
     # If papers too low, travel is harder / costs you something
     if pc.papers < required_papers:
-        centered "Denied."
-        #stamp sound? 
+        
+        play sound "stamp.wav"
+        centered "Entry Denied."
+
+        "You are stopped at the border."
+        "Nothing helps; without the required papers, you are denied entry."
+        "You must find another way."
+
+        if pc.archetype == "Journalist":
+
+            menu:
+                "What will you do?"
+                "Bribe a security guard to see nothing." if pc.savings > 0:
+                    $ pc.savings = pc.savings - 1
+                    "It cost you a pretty penny, but you managed to pay off an officer to look the other way."
+                    "You don't feel good about it, but you need to get into this country if you want to make a change."
+                    "Now you're here."
+
+                "Claim your right to asylum.":
+                    $ pc.visibility = pc.visibility + 12
+                    "You make a scene. Some people are finally taking you seriously and help you out."
+                    "It's a long process, but eventually you are admitted into the country."
+                    "However, you can't shake off the feeling of being constantly under surveillance now."
+
+                "Get your institution to cover for you.":
+                    $ pc.visibility = pc.visibility + 5
+                    "You make a phone call."
+                    "Groans and complaints from the other end. They don't want to help you. You are too much work."
+                    "However, after berating you for a long time, they do. You are waved through security and can enter the country."
+
+
+        elif pc.archetype == "Engineer":
+            
+            menu:
+                "What will you do?"
+                "Pay for a forged passport." if pc.savings > 0:
+                    $ pc.savings = pc.savings - 1
+                    $ pc.papers = pc.papers +1
+                    $ pc.visibility = pc.visibility + 3
+                    "You have some contacts."
+                    "It wasn't cheap, and you had to wait in limbo for a while, but eventually you get your hands on a fresh passport."
+                    "It has your face and your name in it. But the nationality is not the same."
+                    "For some sick reason, this makes it easier to travel from now on."
+
+                "Find a company that will hire you and allows you to enter the country.":
+                    $ pc.visibility = pc.visibility + 6
+                    "It is a dirty solution, as you have no intention of following through. But your diplomas make applying for jobs at least feasible."
+                    "Surprisingly quickly, you get online interviews and go through the process multiple times."
+                    "Eventually, one of them promises to take care of the paperwork."
+                    "Now, you can enter the country."
+
+                "Find a security issue to exploit in the airport systems.":
+                    $ pc.visibility = pc.visibility + 8
+                    "Even here, airports run on ancient systems. You know where to look."
+                    "You find multiple security issues. Access to employee data is so easy, it is almost laughable."
+                    "After some quick emails, you convince a young security force to let you through, and you enter the country."
+
+        else:   # Artist 
+            
+            menu:
+                "What will you do?"
+                "Pay a smuggler to enter covertly as part of a big group." if pc.savings > 0:
+                    $ pc.savings = pc.savings - 1
+                    "You have heard of people entering this country in less official ways."
+                    "Your contacts make it surprisingly easy to find a person who organizes such ways."
+                    "The hard part, however, takes almost two weeks. Eventually, you are in. But it cost you quite a bit."
+
+                "Convince a security guard of your need to enter the country urgently.":
+                    $ pc.visibility = pc.visibility + 3
+                    "You find a young-looking guard. Unlike the others, this one still has some light reflecting in their eyes."
+                    "Approaching casually, you tell them about your situation. Some details are exaggerated, but it's mostly true."
+                    "Once you start crying, you can tell that it is working. Wearing them down takes a while, but eventually, you can enter the country."
+
+                "Find people to join your cause and start a riot.":
+                    $ pc.visibility = pc.visibility + 15
+                    "The place is crowded. Everyone seems to be in a rush, but some stop to listen to what you say."
+                    "Eventually, a crowd forms around you. Strength in numbers. It is an incredible risk for everyone involved."
+                    "But you pull through. Not everyone was so lucky."
+                    "You're inside. And now they are searching for you."
+
+
+        "..."
+
 
         #choose how to get in: pay a smuggler (if enough money) or based on char. strength 
         
     else:
-        centered "Approved."
-        #stamp sound? 
+
+        play sound "stamp.wav"
+        centered "Entry Approved."
+
     return
 
 label run_end:

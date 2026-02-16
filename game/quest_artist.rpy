@@ -2,7 +2,7 @@
 label quest_artresist_briefing:
 
     call quest_enter
-    call travel_to_quest(required_papers=1)
+    call travel_to_quest(required_papers=2)
     
     $ quest_endings = {
         "good":    "Your art draws a crowd far beyond campus expectations.\nWhat began as one voice becomes many.",

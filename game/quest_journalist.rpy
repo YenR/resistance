@@ -2,7 +2,7 @@
 label quest_journalist_briefing:
     
     call quest_enter
-    call travel_to_quest(required_papers=1)
+    call travel_to_quest(required_papers=0)
     
     $ quest_endings = {
         "good":    "Equipped with evidence, the protests regain momentum.",
