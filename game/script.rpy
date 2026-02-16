@@ -484,7 +484,7 @@ label travel_to_quest(required_papers=1):
                     $ pc.visibility = pc.visibility + 5
                     "You make a phone call."
                     "Groans and complaints from the other end. They don't want to help you. You are too much work."
-                    "However, after berating you for a long time, they do. 4eYou are waved through security and can enter the country."
+                    "However, after berating you for a long time, they do. You are waved through security and can enter the country."
 
 
         elif pc.archetype == "Engineer":
