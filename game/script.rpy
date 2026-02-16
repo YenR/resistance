@@ -519,9 +519,12 @@ label travel_to_quest(required_papers=1):
                 "What will you do?"
                 "Pay a smuggler to enter covertly as part of a big group." if pc.savings > 0:
                     $ pc.savings = pc.savings - 1
+                    $ pc.visibility = pc.visibility + 8
+                    $ pc.papers = pc.papers + 1
                     "You have heard of people entering this country in less official ways."
-                    "Your contacts make it surprisingly easy to find a person who organizes such ways."
-                    "The hard part, however, takes almost two weeks. Eventually, you are in. But it cost you quite a bit."
+                    "You ask around and eventually find someone who organizes such ways. However, there is no guarantee."
+                    "It takes you weeks of uncertainty and hardship. Eventually, you are in. You lay low for a year, integrating yourself into the community so no one questions you. Then you get your documents."
+                    "You'll always have to try harder than others to prove your existence, but perhaps you can change the system."
 
                 "Convince a security guard of your need to enter the country urgently.":
                     $ pc.visibility = pc.visibility + 3
