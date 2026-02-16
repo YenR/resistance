@@ -141,9 +141,9 @@ label quest_journalist_boss_confrontation:
 #---
     call screen risk_assessment_menu_2options(
         pc,
-        prompt="",
-        option1="Frame it as a major scoop.", option1tt="Appeal to your boss' greed.",
-        option2="Focus on inconsistencies.", option2tt=""
+        prompt="A reason to write the dossier",
+        option1="Frame it as a major scoop.", option1tt="Appeal to your boss's greed.",
+        option2="Focus on inconsistencies.", option2tt=None
     )
 
     $ chosen_approach = _return
@@ -248,9 +248,14 @@ $ risk_record, tip_record = calc_choice_risk(
         base=40,
         suspicion=suspicion,
         pc=pc,
-        spotlight="", 
-        strength_keyword="Journalism"
+        spotlight=None, 
+        strength_keyword="Tech access"  # changed this because journalism is covered by the institutional cover in the next calculation anyway
     )
+
+if institutional_cover == "Some" or has_strength(pc, "Institutional cover") :
+    $ risk_record -= 10  # news agency protection
+else:
+    $ risk_record += 10  # no backup, higher risk
 
 call screen risk_assessment_menu_2options(
         pc,
@@ -265,10 +270,6 @@ if chosen_approach == "Get close with a hidden mic.":
 # ==============================================================================
 # 🎲 DICE ROLL
 # ==============================================================================
-    if institutional_cover == "Some":
-        $ risk_record -= 10  # news agency protection
-    else:
-        $ risk_record += 10  # no backup, higher risk
 
     $ risk_record = max(5, min(90, risk_record))
 
