@@ -113,7 +113,7 @@ init python:
             if bonus != 0:
                 notes.append("{} helps ({}/2)".format(spotlight.capitalize(), val))
             else:
-                notes.append("{} Nothing to add. ({}/2)".format(spotlight.capitalize(), val))
+                notes.append("{} insufficient ({}/2)".format(spotlight.capitalize(), val))
 
         # tiny strength nudge
         if strength_keyword:
@@ -121,7 +121,7 @@ init python:
                 risk -= 5
                 notes.append("Strength: {}".format(strength_keyword))
             else:
-                notes.append("Nothing to add. {}".format(strength_keyword))
+                notes.append("{}: Nothing to add".format(strength_keyword))
 
         risk = max(5, min(90, int(risk)))
         tooltip = "\n".join(notes)
@@ -581,7 +581,7 @@ label character_select:
             archetype="Journalist",
             codename="J.",
             portrait="images/portrait1.png",
-            strengths=["Journalism ", "Communication ", "Institutional cover "],
+            strengths=["Journalism", "Communication", "Institutional cover"],
             gameplay=["High 🎯 Impact", "Medium 👁️ Visibility", "Moderate 🚓 Risk"],
             #papers=2, language=2, affiliation=2, savings=1, visibility=35
 
@@ -599,7 +599,7 @@ label character_select:
             archetype="Engineer",
             codename="E.",
             portrait="images/portrait2.png",
-            strengths=["Engineering ", "Tech access ", "Community organizing "],
+            strengths=["Engineering", "Tech access", "Community organizing"],
             gameplay=["Medium 🎯 Impact", "Low 👁️ Visibility", "Low-to-mid 🚓 Risk"],
             #papers=1, language=1, affiliation=1, savings=2, visibility=15
             papers=1 + e["mod"][0],
@@ -615,7 +615,7 @@ label character_select:
             archetype="Artist",
             codename="A.",
             portrait="images/portrait3.png",
-            strengths=["Art & storytelling ", "Public speaking ", "Charisma "],
+            strengths=["Art & storytelling", "Public speaking", "Charisma"],
             gameplay=["High 🎯 Impact", "High 👁️ Visibility", "High 🚓 Risk"],
             #papers=1, language=2, affiliation=1, savings=1, visibility=55
             papers=1 + a["mod"][0],

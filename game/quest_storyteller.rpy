@@ -145,7 +145,7 @@ label quest_storyteller_library_mouthbox:
 # 🎲 DICE ROLL
 # ==============================================================================
 
-    $ risk_mouthbox_final = risk_mouthbox + (10 if mouthbox_louder else -5)
+    $ risk_mouthbox_final = risk_mouthbox #+ (10 if mouthbox_louder else -5) #Tom: removed this part because it doesnt make sense at the moment
     $ risk_mouthbox_final = max(5, min(90, risk_mouthbox_final))
 
     $ current_outcome = perform_roll(risk_mouthbox_final)
@@ -386,12 +386,33 @@ label quest_storyteller_readingroom_test:
     #$ odds1 = 25 + (suspicion * 10) + pc.get_profile_friction()/2 + 10
     #$ odds2 = 25 + (suspicion * 10) + pc.get_profile_friction() 
 
-    $ risk_share = 18 + suspicion * 5 + int(pc.get_profile_friction() * 0.4)
-    $ risk_rumor = 28 + suspicion * 6 + int(pc.get_profile_friction() * 0.5)
-    $ risk_question = 5  # basically safe / no roll path
+    #$ risk_share = 18 + suspicion * 5 + int(pc.get_profile_friction() * 0.4)
+    #$ risk_rumor = 28 + suspicion * 6 + int(pc.get_profile_friction() * 0.5)
+    #$ risk_question = 5  # basically safe / no roll path
 
-    $ risk_share = max(5, min(90, risk_share))
-    $ risk_rumor = max(5, min(90, risk_rumor))
+    #$ risk_share = max(5, min(90, risk_share))
+    #$ risk_rumor = max(5, min(90, risk_rumor))
+
+    $ risk_share, tip_share = calc_choice_risk(
+        base=18,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="language",
+        strength_keyword="Art & storytelling",
+        suspicion_w = 4,
+        friction_w = 0.5
+    )
+
+    $ risk_rumor, tip_rumor = calc_choice_risk(
+        base=20,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="affiliation",
+        strength_keyword="Communication",
+        suspicion_w = 6,
+        friction_w = 0.3
+    )
+
 
 # ==============================================================================
 # ‼️ READING ROOM CHOICE 2
@@ -400,8 +421,8 @@ label quest_storyteller_readingroom_test:
     call screen risk_assessment_menu_2options(
         pc,
         prompt="How do you respond?",
-        option1="Share a story of your own.", option1tt="{}% Chance of Failure".format(risk_share), 
-        option2="Tell a rumor, not a story.", option2tt="{}% Chance of Failure".format(risk_rumor),
+        option1="Share a story of your own.", option1tt="{}% Chance of Failure\n{}".format(risk_share, tip_share), 
+        option2="Tell a rumor, not a story.", option2tt="{}% Chance of Failure\n{}".format(risk_rumor, tip_rumor),
         option3="Ask them a question instead.", option3tt="Unknown chance of Failure"
     )
     $ chosen_approach = _return
@@ -518,13 +539,23 @@ label quest_storyteller_readingroom_write_loop:
         "The manuscript grows heavier with every line."
 
 
-    $ risk = 15 + (suspicion * 6) + int(pc.get_profile_friction() * 0.5)
-    $ risk = max(5, min(90, risk))
+    $ risk, tip = calc_choice_risk(
+        base=15,
+        suspicion=suspicion,
+        pc=pc,
+        spotlight="affiliation",
+        strength_keyword="Institutional cover",
+        suspicion_w = 6,
+        friction_w = 0.5
+    )
+
+    #$ risk = 15 + (suspicion * 6) + int(pc.get_profile_friction() * 0.5)
+    #$ risk = max(5, min(90, risk))
 
     call screen risk_assessment_menu_2options(
         pc,
         prompt="Do you keep writing?",
-        option1="Keep writing", option1tt="{}% Chance of Failure".format(risk), 
+        option1="Keep writing",option1tt="{}% Chance of Failure\n{}".format(risk, tip), 
         option2="Stop. Hide the manuscript.", option2tt="0% Chance of Failure" 
     )
     $ chosen_approach = _return

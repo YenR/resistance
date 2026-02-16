@@ -271,9 +271,9 @@ screen risk_assessment_menu_2options(pc, prompt, option1, option1tt, option2, op
     $ tooltip = GetTooltip()
     if tooltip:
         frame:
-            xpos 0.78
-            ypos 0.35
-            xmaximum 360
+            xpos 0.7
+            ypos 0.45
+            xmaximum 500
             padding (25, 25)
             background "#000000dd"
 
