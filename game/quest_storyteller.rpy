@@ -3,6 +3,11 @@ label quest_storyteller_briefing:
     call quest_enter
     call travel_to_quest(required_papers=1)
 
+    $ quest_endings = {
+        "good":    "The narratives circulate discreetly, reminding people of their shared reality.\nThe mouthbox keeps talking - but it is no longer the only voice.",
+        "neutral": "You managed to record only a part of the stories.\nStill, even fragments matter.",
+        "bad":     "As the mouthbox speaks on, the shelves remain silent.\nFor now…"
+    }
 
 # ==============================================================================
 # BRIEFING
@@ -599,6 +604,7 @@ label quest_storyteller_readingroom_test_fail:
     #$ quest_failed = True
 
     $ suspicion += 1
+    $ quest_summaries["storyteller"] = quest_endings["bad"]
     jump quest_exit
     #return
 
@@ -620,6 +626,11 @@ label quest_storyteller_readingroom_escape:
     "\"And don’t carry it where you can be searched.\""
 
     "The notebook is gone before you can look up."
+
+    if pages_written >= 2:
+        $ quest_summaries["storyteller"] = quest_endings["good"]
+    else:
+        $ quest_summaries["storyteller"] = quest_endings["neutral"]
 
  
     jump quest_exit
@@ -682,7 +693,7 @@ label quest_storyteller_library_mouthbox_fail:
 label quest_storyteller_supermarket_1:
     #"-- not implemented -- "
     "You find yourself alone in the cold, nowhere to go..."
-
+    $ quest_summaries["storyteller"] = quest_endings["bad"]
     jump quest_exit
 
 label quest_storyteller_succumb:

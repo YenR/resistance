@@ -3,6 +3,12 @@ label quest_artresist_briefing:
 
     call quest_enter
     call travel_to_quest(required_papers=1)
+    
+    $ quest_endings = {
+        "good":    "Your art draws a crowd far beyond campus expectations.\nWhat began as one voice becomes many.",
+        "neutral": "Institutional pushback limits your reach.\nBut within smaller groups, it resonates deeply.",
+        "bad":     "Your message was cut short.\nBut the need to speak remains."
+    }
 
 # ==============================================================================
 # BRIEFING
@@ -258,6 +264,8 @@ label quest_artresist_success:
     "You don\'t know who it changed, but you know someone stayed up thinking about it."
 
     $ seeds_of_change += 3
+    
+    $ quest_summaries["artist"] = quest_endings["good"]
 
     jump quest_exit_art
 
@@ -284,6 +292,8 @@ label quest_artresist_failure:
         "\"I read it. I saw it. I needed it.\""
 
     $ seeds_of_change += 1
+    
+    $ quest_summaries["artist"] = quest_endings["neutral"]
 
     jump quest_exit_art
 

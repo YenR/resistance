@@ -3,6 +3,12 @@ label quest_journalist_briefing:
     
     call quest_enter
     call travel_to_quest(required_papers=1)
+    
+    $ quest_endings = {
+        "good":    "Equipped with evidence, the protests regain momentum.",
+        "neutral": "Politicians might deny everything, but at least the story is no longer under state control.",
+        "bad":     "With the evidence seized, sources discredited, officials declare the unrest resolved.\nThe streets fall quiet. But suspicion lingers..."
+    }
 
 # ==============================================================================
 # BRIEFING
@@ -323,6 +329,9 @@ label quest_journalist_success_major:
     "You slip away into the kitchen, heart hammering."
     
     $ seeds_of_change += 4
+
+    $ quest_summaries["journalist"] = quest_endings["good"]
+
     jump quest_journalist_epilogue
 
 # ==============================================================================
@@ -337,6 +346,9 @@ label quest_journalist_success_minor:
     "It's not a recording, but it's a lead. It's the start of a thread you can pull."
     
     $ seeds_of_change += 2
+
+    $ quest_summaries["journalist"] = quest_endings["neutral"]
+
     jump quest_journalist_epilogue
 
 
@@ -357,6 +369,8 @@ label quest_journalist_caught:
 
     $ suspicion += 2
     $ seeds_of_change += 1
+
+    $ quest_summaries["journalist"] = quest_endings["bad"]
     
     jump quest_journalist_failure_epilogue
 

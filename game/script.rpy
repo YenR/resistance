@@ -44,6 +44,7 @@ default quest_start_suspicion = 0
 default quest_start_influence = 0
 
 default quest_attempted = {"storyteller": False, "journalist": False, "artist": False}
+default quest_summaries = {}
 default selected_quest = None
 
 

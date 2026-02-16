@@ -145,7 +145,7 @@ screen char_stats():
 
     else:
         vbox:
-            align (0.55, 0.5)
+            align (0.6, 0.55)
             xsize 1000
             ysize 800
 
@@ -153,8 +153,8 @@ screen char_stats():
                 spacing 20
 
                 null height 40
-                label "STATUS" xalign 0.5 text_size 50
-                label "[pc.codename]" xalign 0.5 text_size 80 text_color "#000" text_font "fonts/BeachmanScript.ttf"
+                #label "STATUS" xalign 0.5 text_size 50
+                label "The [pc.archetype]" xalign 0.45 text_size 100 text_color "#000" text_font "fonts/BeachmanScript.ttf"
 
                 hbox:
                     spacing 80
@@ -162,7 +162,7 @@ screen char_stats():
 
                     vbox:
                         xsize 400
-                        add pc.portrait size (560, 400)
+                        add pc.portrait size (490, 350)
                         null height 10
 
                         # text "[pc.codename]" color "#222"
@@ -191,11 +191,11 @@ screen char_stats():
                 null height 10
 
                 textbutton "Close":
-                    xalign 0.5
+                    xalign 0.45
                     action Hide("char_stats")
                     padding (50, 20)
                     text_size 30
-                    background "#444"
+                    background "#dab1a7"
 
 
 # ==============================================================================
